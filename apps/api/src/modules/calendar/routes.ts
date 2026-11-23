@@ -39,10 +39,15 @@ calendarRouter.get('/calendar', requirePermission('reservations.read'), async (r
     },
     include: {
       buildings: {
-        ...(buildingOnly ? { where: { id: { in: access.buildingIds } } } : {}),
+        where: buildingOnly ? { id: { in: access.buildingIds } } : { status: 'ACTIVE' },
         include: {
           floors: {
-            include: { rooms: { include: { beds: { where: { status: 'ACTIVE' } } } } },
+            include: {
+              rooms: {
+                where: { operationalStatus: 'ACTIVE' },
+                include: { beds: { where: { status: 'ACTIVE' } } },
+              },
+            },
           },
         },
       },
@@ -88,8 +93,9 @@ calendarRouter.get('/calendar', requirePermission('reservations.read'), async (r
         stayEnd: { gt: from },
         bed: {
           room: {
+            operationalStatus: 'ACTIVE',
             floor: {
-              building: { dormitoryId: { in: dormitoryIds } },
+              building: { dormitoryId: { in: dormitoryIds }, status: 'ACTIVE' },
               ...(buildingOnly ? { buildingId: { in: access.buildingIds } } : {}),
             },
           },

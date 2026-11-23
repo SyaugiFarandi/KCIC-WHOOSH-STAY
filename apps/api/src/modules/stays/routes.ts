@@ -11,14 +11,17 @@ import {
   type ReservationDetail,
 } from '@whoosh/shared';
 import { prisma } from '../../lib/prisma.js';
-import { paginationMeta, sendSuccess } from '../../lib/http.js';
+import { paginationMeta, requestId, sendSuccess } from '../../lib/http.js';
 import { validate } from '../../lib/validate.js';
 import { ConflictError, ForbiddenError, NotFoundError } from '../../middleware/errors.js';
 import { requirePermission } from '../auth/middleware.js';
 import { readableReservationWhere } from '../../lib/scope.js';
 import { writeAudit } from '../audit/audit.js';
-import { formatDateOnly, todayInJakarta } from '../../lib/dates.js';
+import { safeRecordReservationException } from '../exceptions/service.js';
+import { formatDateOnly, nightsBetween, todayInJakarta } from '../../lib/dates.js';
 import { notifyEmployees } from '../notifications/service.js';
+import { evaluateAndEnforce } from '../policies/service.js';
+import { minutesSinceJakartaStartOfDay } from '../policies/integration.js';
 
 export const staysRouter = Router();
 
@@ -86,6 +89,18 @@ function activeAllocation(reservation: StayReservation) {
   );
 }
 
+function stayCategoryTags(reservation: StayReservation): string[] {
+  return [
+    ...new Set(
+      reservation.guests.flatMap((guest) => [
+        ...(guest.employee.departmentCode ? [`dept:${guest.employee.departmentCode}`] : []),
+        ...(guest.employee.divisionCode ? [`div:${guest.employee.divisionCode}`] : []),
+        ...(guest.employee.positionCode ? [`pos:${guest.employee.positionCode}`] : []),
+      ]),
+    ),
+  ];
+}
+
 function mapStayDetail(reservation: StayReservation): ReservationDetail {
   const primaryAllocation = activeAllocation(reservation);
   return {
@@ -109,6 +124,9 @@ function mapStayDetail(reservation: StayReservation): ReservationDetail {
     allocationSummary: primaryAllocation
       ? `${primaryAllocation.bed.room.roomNumber}/${primaryAllocation.bed.bedCode}`
       : null,
+    isEmergency: reservation.isEmergency,
+    emergencyReason: reservation.emergencyReason,
+    priority: reservation.priority,
     cancellationReason: reservation.cancellationReason,
     allocations: reservation.allocations.map((allocation) => ({
       id: allocation.id,
@@ -151,9 +169,27 @@ function mapStayDetail(reservation: StayReservation): ReservationDetail {
   };
 }
 
-async function assertReadyForStay(reservation: StayReservation): Promise<void> {
+async function assertReadyForStay(
+  reservation: StayReservation,
+  actorUserId: string | null,
+): Promise<void> {
   const allocation = activeAllocation(reservation);
   if (!allocation) {
+    await safeRecordReservationException({
+      dedupeKey: `ALLOCATION_MISSING:${reservation.id}`,
+      type: 'ALLOCATION_MISSING',
+      severity: 'HIGH',
+      dormitoryId: reservation.dormitoryId,
+      reservationId: reservation.id,
+      title: 'Check-in tanpa alokasi tempat tidur',
+      description: `Reservasi ${reservation.bookingCode} belum memiliki alokasi tempat tidur saat percobaan check-in.`,
+      evidence: {
+        bookingCode: reservation.bookingCode,
+        checkInDate: formatDateOnly(reservation.checkInDate),
+        checkOutDate: formatDateOnly(reservation.checkOutDate),
+      },
+      actorUserId,
+    });
     throw new ConflictError(ERROR_CODES.RESERVATION_STATE_INVALID, 'Reservation has no bed allocation');
   }
   const now = new Date();
@@ -165,13 +201,39 @@ async function assertReadyForStay(reservation: StayReservation): Promise<void> {
     },
     select: { id: true },
   });
-  if (
-    blocking ||
-    allocation.bed.status !== 'ACTIVE' ||
-    allocation.bed.housekeepingStatus !== 'READY' ||
-    allocation.bed.room.operationalStatus !== 'ACTIVE' ||
-    allocation.bed.room.housekeepingStatus !== 'READY'
-  ) {
+  const reasons: string[] = [];
+  if (blocking) reasons.push(`inventory_block:${blocking.id}`);
+  if (allocation.bed.status !== 'ACTIVE') reasons.push(`bed_status:${allocation.bed.status}`);
+  if (allocation.bed.housekeepingStatus !== 'READY') {
+    reasons.push(`bed_housekeeping:${allocation.bed.housekeepingStatus}`);
+  }
+  if (allocation.bed.room.operationalStatus !== 'ACTIVE') {
+    reasons.push(`room_status:${allocation.bed.room.operationalStatus}`);
+  }
+  if (allocation.bed.room.housekeepingStatus !== 'READY') {
+    reasons.push(`room_housekeeping:${allocation.bed.room.housekeepingStatus}`);
+  }
+  if (reasons.length) {
+    await safeRecordReservationException({
+      dedupeKey: `READINESS_FAILURE:${reservation.id}:${allocation.bedId}`,
+      type: 'READINESS_FAILURE',
+      severity: 'HIGH',
+      dormitoryId: reservation.dormitoryId,
+      reservationId: reservation.id,
+      roomId: allocation.bed.roomId,
+      bedId: allocation.bedId,
+      title: 'Check-in gagal karena kesiapan kamar',
+      description: `Kamar ${allocation.bed.room.roomNumber} / tempat tidur ${allocation.bed.bedCode} belum siap untuk check-in.`,
+      evidence: {
+        reasons,
+        bedStatus: allocation.bed.status,
+        bedHousekeepingStatus: allocation.bed.housekeepingStatus,
+        roomOperationalStatus: allocation.bed.room.operationalStatus,
+        roomHousekeepingStatus: allocation.bed.room.housekeepingStatus,
+        inventoryBlockId: blocking?.id ?? null,
+      },
+      actorUserId,
+    });
     throw new ConflictError(ERROR_CODES.ROOM_UNAVAILABLE, 'Room or bed is not operationally ready');
   }
 }
@@ -270,7 +332,7 @@ staysRouter.post('/stays/check-in', requirePermission('stays.check_in'), async (
   if (today < checkIn || today >= checkOut) {
     throw new ConflictError(ERROR_CODES.RESERVATION_STATE_INVALID, 'Check-in is outside the reservation date range');
   }
-  await assertReadyForStay(reservation);
+  await assertReadyForStay(reservation, req.auth!.user.id);
 
   const targetEmployees = qrEmployeeId
     ? [qrEmployeeId]
@@ -280,6 +342,31 @@ staysRouter.post('/stays/check-in', requirePermission('stays.check_in'), async (
   if (targetEmployees.some((id) => !reservation.guests.some((guest) => guest.employeeId === id))) {
     throw new NotFoundError('Guest not found on reservation');
   }
+
+  await evaluateAndEnforce(
+    {
+      workflow: 'CHECK_IN',
+      asOfDate: today,
+      dormitoryId: reservation.dormitoryId,
+      checkInDate: checkIn,
+      checkOutDate: checkOut,
+      nights: nightsBetween(checkIn, checkOut),
+      occupantCount: reservation.occupantCount,
+      priority: reservation.priority,
+      isEmergency: reservation.isEmergency,
+      earlyCheckInMinutes: 0,
+      beforeScheduledDate: today < checkIn,
+      employeeCategories: stayCategoryTags(reservation),
+      subjectType: 'STAY',
+      subjectId: reservation.id,
+    },
+    {
+      actorUserId: req.auth!.user.id,
+      requestId: requestId(),
+      subjectType: 'STAY',
+      subjectId: reservation.id,
+    },
+  );
 
   const updated = await prisma.$transaction(async (tx) => {
     // Serialize concurrent check-ins on the same reservation and re-validate state
@@ -409,6 +496,35 @@ staysRouter.post('/stays/check-out', requirePermission('stays.check_out'), async
   if (!employeeIds.length) {
     throw new ConflictError(ERROR_CODES.RESERVATION_STATE_INVALID, 'No checked-in guests remain');
   }
+
+  const today = todayInJakarta();
+  const checkInDate = formatDateOnly(reservation.checkInDate);
+  const checkOutDate = formatDateOnly(reservation.checkOutDate);
+  await evaluateAndEnforce(
+    {
+      workflow: 'CHECK_OUT',
+      asOfDate: today,
+      dormitoryId: reservation.dormitoryId,
+      checkInDate,
+      checkOutDate,
+      nights: nightsBetween(checkInDate, checkOutDate),
+      occupantCount: reservation.occupantCount,
+      priority: reservation.priority,
+      isEmergency: reservation.isEmergency,
+      lateCheckOutMinutes:
+        today > checkOutDate ? minutesSinceJakartaStartOfDay(checkOutDate) : 0,
+      beforeScheduledCheckout: today < checkOutDate,
+      employeeCategories: stayCategoryTags(reservation),
+      subjectType: 'STAY',
+      subjectId: reservation.id,
+    },
+    {
+      actorUserId: req.auth!.user.id,
+      requestId: requestId(),
+      subjectType: 'STAY',
+      subjectId: reservation.id,
+    },
+  );
 
   const updated = await prisma.$transaction(async (tx) => {
     await tx.$queryRaw`SELECT id FROM reservations WHERE id = ${reservation.id}::uuid FOR UPDATE`;

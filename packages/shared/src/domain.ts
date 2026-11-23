@@ -368,6 +368,9 @@ export const createReservationSchema = z
     bedIds: z.array(z.uuid()).min(1).max(4).optional(),
     autoConfirm: z.boolean().optional(),
     idempotencyKey: z.string().trim().min(8).max(150).optional(),
+    isEmergency: z.boolean().optional(),
+    emergencyReason: z.string().trim().max(300).optional(),
+    priority: z.enum(['LOW', 'NORMAL', 'HIGH', 'EMERGENCY']).optional(),
   })
   .refine((value) => value.checkOutDate > value.checkInDate, {
     message: 'checkOutDate must be after checkInDate',
@@ -422,6 +425,9 @@ export interface ReservationSummary {
   checkedInAt: string | null;
   checkedOutAt: string | null;
   allocationSummary: string | null;
+  isEmergency: boolean;
+  emergencyReason: string | null;
+  priority: string;
 }
 
 export interface ReservationDetail extends ReservationSummary {

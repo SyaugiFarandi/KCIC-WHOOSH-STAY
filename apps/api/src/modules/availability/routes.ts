@@ -23,6 +23,7 @@ availabilityRouter.get('/availability', requirePermission('availability.read'), 
     access,
   );
 
+  const buildingOnly = access.buildingIds.length > 0 && access.dormitoryIds.length === 0;
   const dormitories = await prisma.dormitory.findMany({
     where: {
       status: 'ACTIVE',
@@ -31,10 +32,12 @@ availabilityRouter.get('/availability', requirePermission('availability.read'), 
     },
     include: {
       buildings: {
+        where: buildingOnly ? { id: { in: access.buildingIds } } : { status: 'ACTIVE' },
         include: {
           floors: {
             include: {
               rooms: {
+                where: { operationalStatus: 'ACTIVE' },
                 include: { beds: { where: { status: 'ACTIVE' } } },
               },
             },

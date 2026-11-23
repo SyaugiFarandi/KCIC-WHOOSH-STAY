@@ -20,6 +20,8 @@ const manageRoutes = [
   '/manage/reservations',
   '/manage/availability',
   '/manage/calendar',
+  '/manage/occupancy',
+  '/manage/exceptions',
   '/manage/front-desk',
   '/manage/inventory',
   '/manage/gallery',

@@ -2,6 +2,7 @@ import { useState, Suspense, type CSSProperties } from 'react';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import {
   Activity,
+  AlertTriangle,
   BedDouble,
   Building2,
   CalendarCheck2,
@@ -10,8 +11,10 @@ import {
   ConciergeBell,
   Database,
   FileBarChart2,
+  Gauge,
   LayoutDashboard,
   Menu,
+  Scale,
   ShieldCheck,
   Sparkles,
   UserRound,
@@ -82,6 +85,12 @@ const navSections: NavSection[] = [
         permission: 'reservations.read',
       },
       {
+        to: '/manage/occupancy',
+        label: 'Inteligensi Hunian',
+        icon: Gauge,
+        permission: 'occupancy.read',
+      },
+      {
         to: '/manage/front-desk',
         label: 'Front Desk & Check-in',
         icon: ConciergeBell,
@@ -94,6 +103,12 @@ const navSections: NavSection[] = [
     label: 'Operasional',
     icon: ConciergeBell,
     items: [
+      {
+        to: '/manage/exceptions',
+        label: 'Pusat Eksepsi',
+        icon: AlertTriangle,
+        permission: 'exceptions.read',
+      },
       {
         to: '/manage/housekeeping',
         label: 'Housekeeping',
@@ -182,6 +197,12 @@ const navSections: NavSection[] = [
         label: 'Master Data',
         icon: Database,
         permission: 'dormitories.read',
+      },
+      {
+        to: '/manage/policies',
+        label: 'Kebijakan Akomodasi',
+        icon: Scale,
+        permission: 'policies.read',
       },
       {
         to: '/manage/users',

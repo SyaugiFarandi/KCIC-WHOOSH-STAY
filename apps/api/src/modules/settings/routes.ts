@@ -145,6 +145,7 @@ function mapPolicy(policy: {
 settingsRouter.get('/policies', requirePermission('policies.manage'), async (req, res) => {
   if (!req.access!.global) throw new ForbiddenError('Policies require a global scope');
   const items = await prisma.accommodationPolicy.findMany({
+    where: { engineManaged: false },
     orderBy: [{ priority: 'asc' }, { code: 'asc' }],
   });
   sendSuccess(res, { items: items.map(mapPolicy) });
@@ -154,6 +155,12 @@ settingsRouter.post('/policies', requirePermission('policies.manage'), async (re
   if (!req.access!.global) throw new ForbiddenError('Policies require a global scope');
   const input = validate(upsertPolicySchema, req.body);
   const existing = await prisma.accommodationPolicy.findUnique({ where: { code: input.code } });
+  if (existing?.engineManaged) {
+    throw new ConflictError(
+      'POLICY_STATE_INVALID',
+      'Policy code belongs to the Policy Engine; edit it in Kebijakan & Aturan.',
+    );
+  }
   const policy = await prisma.accommodationPolicy.upsert({
     where: { code: input.code },
     create: {
@@ -201,6 +208,12 @@ settingsRouter.patch('/policies/:id', requirePermission('policies.manage'), asyn
   const id = validate(z.uuid(), req.params.id);
   const existing = await prisma.accommodationPolicy.findUnique({ where: { id } });
   if (!existing) throw new NotFoundError('Policy not found');
+  if (existing.engineManaged) {
+    throw new ConflictError(
+      'POLICY_STATE_INVALID',
+      'Policy Engine policies cannot be changed from legacy settings.',
+    );
+  }
   const input = validate(updatePolicySchema, req.body);
   if (!Object.keys(input).length) throw new ConflictError('CONFLICT', 'No changes supplied');
   const policy = await prisma.accommodationPolicy.update({

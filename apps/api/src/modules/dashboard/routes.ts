@@ -7,6 +7,7 @@ import { requirePermission } from '../auth/middleware.js';
 import { employeeSyncMode } from '../employees/service.js';
 import { ForbiddenError } from '../../middleware/errors.js';
 import { readableReservationWhere, readableRoomWhere } from '../../lib/scope.js';
+import { capacityBedWhere } from '../../lib/capacity.js';
 import { addDays, formatDateOnly, todayDateOnly } from '../../lib/dates.js';
 
 export const dashboardRouter = Router();
@@ -85,14 +86,14 @@ dashboardRouter.get(
         where: { ...reservationScope, approvalStatus: 'PENDING', status: 'PENDING_APPROVAL' },
       }),
       prisma.bed.count({
-        where: { status: 'ACTIVE', room: { operationalStatus: 'ACTIVE', ...roomScope } },
+        where: capacityBedWhere(access),
       }),
       prisma.bedAllocation.findMany({
         where: {
           status: { in: ['HELD', 'ACTIVE'] },
           stayStart: { lte: today },
           stayEnd: { gt: today },
-          bed: { room: roomScope },
+          bed: capacityBedWhere(access),
         },
         distinct: ['bedId'],
         select: { bedId: true },

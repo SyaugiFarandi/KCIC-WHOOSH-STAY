@@ -2,3 +2,6 @@ export * from './permissions.js';
 export * from './errors.js';
 export * from './schemas.js';
 export * from './domain.js';
+export * from './occupancy.js';
+export * from './exceptions.js';
+export * from './policies.js';

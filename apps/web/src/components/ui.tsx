@@ -912,7 +912,12 @@ export function DataTable<T>({
 
   return (
     <div>
-      <div className="scrollbar-slim overflow-x-auto">
+      <div
+        className="scrollbar-slim overflow-x-auto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand-300"
+        tabIndex={0}
+        role="region"
+        aria-label={ariaLabel}
+      >
         <table className={cn('w-full border-collapse text-sm', minWidthClass)}>
           <caption className="sr-only">{ariaLabel}</caption>
           <thead>

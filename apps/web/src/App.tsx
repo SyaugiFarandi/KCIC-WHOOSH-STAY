@@ -78,6 +78,21 @@ const ManagementAvailabilityPage = lazy(() =>
     default: module.ManagementAvailabilityPage,
   })),
 );
+const ManagementOccupancyPage = lazy(() =>
+  import('./pages/ManagementOccupancyPage').then((module) => ({
+    default: module.ManagementOccupancyPage,
+  })),
+);
+const ManagementPoliciesPage = lazy(() =>
+  import('./pages/ManagementPoliciesPage').then((module) => ({
+    default: module.ManagementPoliciesPage,
+  })),
+);
+const ManagementExceptionsPage = lazy(() =>
+  import('./pages/ManagementExceptionsPage').then((module) => ({
+    default: module.ManagementExceptionsPage,
+  })),
+);
 const ManagementCalendarPage = lazy(() =>
   import('./pages/ManagementCalendarPage').then((module) => ({
     default: module.ManagementCalendarPage,
@@ -250,6 +265,30 @@ export function App() {
             element={
               <PermissionRoute permission="reservations.read">
                 <ManagementCalendarPage />
+              </PermissionRoute>
+            }
+          />
+          <Route
+            path="occupancy"
+            element={
+              <PermissionRoute permission="occupancy.read">
+                <ManagementOccupancyPage />
+              </PermissionRoute>
+            }
+          />
+          <Route
+            path="exceptions"
+            element={
+              <PermissionRoute permission="exceptions.read">
+                <ManagementExceptionsPage />
+              </PermissionRoute>
+            }
+          />
+          <Route
+            path="policies"
+            element={
+              <PermissionRoute permission="policies.read">
+                <ManagementPoliciesPage />
               </PermissionRoute>
             }
           />

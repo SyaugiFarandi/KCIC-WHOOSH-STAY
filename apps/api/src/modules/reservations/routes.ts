@@ -17,7 +17,7 @@ import {
   type ReservationsSummary,
 } from '@whoosh/shared';
 import { prisma } from '../../lib/prisma.js';
-import { paginationMeta, sendSuccess } from '../../lib/http.js';
+import { paginationMeta, requestId, sendSuccess } from '../../lib/http.js';
 import { validate } from '../../lib/validate.js';
 import { ConflictError, ForbiddenError, NotFoundError, ValidationError } from '../../middleware/errors.js';
 import { hasPermission } from '../auth/types.js';
@@ -26,12 +26,23 @@ import { writeAudit } from '../audit/audit.js';
 import { readableReservationWhere } from '../../lib/scope.js';
 import {
   formatDateOnly,
+  nightsBetween,
   parseDateOnly,
   todayDateOnly,
   todayInJakarta,
 } from '../../lib/dates.js';
 import { findAvailableBeds } from '../availability/service.js';
+import {
+  allocationConflictKey,
+  overbookingKey,
+  safeRecordReservationException,
+} from '../exceptions/service.js';
 import { notifyDormitoryManagers, notifyEmployees } from '../notifications/service.js';
+import { evaluateAndEnforce } from '../policies/service.js';
+import {
+  hoursUntilJakartaStartOfDay,
+  rosterShiftSignal,
+} from '../policies/integration.js';
 
 export const reservationsRouter = Router();
 
@@ -91,6 +102,9 @@ function mapSummary(reservation: ReservationWithRelations): ReservationSummary {
     checkedInAt: reservation.checkins[0]?.checkedInAt.toISOString() ?? null,
     checkedOutAt: reservation.checkouts[0]?.checkedOutAt.toISOString() ?? null,
     allocationSummary: allocationLabel(reservation),
+    isEmergency: reservation.isEmergency,
+    emergencyReason: reservation.emergencyReason,
+    priority: reservation.priority,
   };
 }
 
@@ -392,11 +406,38 @@ reservationsRouter.post(
     const approvalRequiredByPolicy = setting?.value !== 'NOT_REQUIRED';
     const canApprove = hasPermission(req.auth!, 'reservations.approve');
     const autoConfirm = Boolean(input.autoConfirm && canApprove);
-    const requiresApproval = approvalRequiredByPolicy && !autoConfirm;
-    const initialStatus = requiresApproval ? 'PENDING_APPROVAL' : 'CONFIRMED';
     const source = access.selfOnly ? 'CREW' : 'MANAGEMENT';
 
+    const isEmergency = input.isEmergency ?? false;
+    const priority = input.priority ?? (isEmergency ? 'EMERGENCY' : 'NORMAL');
+    if ((isEmergency || priority === 'HIGH' || priority === 'EMERGENCY') && !canCreateForOthers) {
+      throw new ForbiddenError(
+        'Only accommodation staff can create emergency or elevated-priority reservations',
+      );
+    }
+    const workflow = isEmergency
+      ? 'EMERGENCY_RESERVATION'
+      : autoConfirm
+        ? 'RESERVATION_AUTO'
+        : 'RESERVATION_MANUAL';
+    const primaryEmployee = employees.find((employee) => employee.id === employeeIds[0]);
+    const employeeCategories = [
+      ...new Set(
+        employees.flatMap((employee) => [
+          ...(employee.departmentCode ? [`dept:${employee.departmentCode}`] : []),
+          ...(employee.divisionCode ? [`div:${employee.divisionCode}`] : []),
+          ...(employee.positionCode ? [`pos:${employee.positionCode}`] : []),
+        ]),
+      ),
+    ];
+    const hasRosterShift = await rosterShiftSignal(
+      employeeIds,
+      input.checkInDate,
+      input.checkOutDate,
+    );
+
     let reservation: ReservationWithRelations;
+    let requiresApproval = approvalRequiredByPolicy && !autoConfirm;
     try {
       reservation = await prisma.$transaction(
         async (tx) => {
@@ -441,9 +482,11 @@ reservationsRouter.post(
               checkOutDate: parseDateOnly(input.checkOutDate),
               occupantCount: employeeIds.length,
               purpose: input.purpose ?? null,
-              status: initialStatus,
-              approvalStatus: requiresApproval ? 'PENDING' : 'NOT_REQUIRED',
-              confirmedAt: requiresApproval ? null : new Date(),
+              isEmergency,
+              emergencyReason: isEmergency ? (input.emergencyReason ?? null) : null,
+              priority,
+              status: 'DRAFT',
+              approvalStatus: 'NOT_REQUIRED',
               createdBy: req.auth!.user.id,
               guests: {
                 create: employeeIds.map((employeeId, index) => ({
@@ -451,12 +494,62 @@ reservationsRouter.post(
                   guestRole: index === 0 ? 'PRIMARY' : 'COMPANION',
                 })),
               },
+            },
+            include: { guests: true },
+          });
+
+          const policyResult = await evaluateAndEnforce(
+            {
+              workflow,
+              asOfDate: today,
+              dormitoryId: input.dormitoryId,
+              checkInDate: input.checkInDate,
+              checkOutDate: input.checkOutDate,
+              nights,
+              occupantCount: employeeIds.length,
+              purpose: input.purpose ?? null,
+              isEmergency,
+              emergencyReason: input.emergencyReason ?? null,
+              priority,
+              hasRosterShift,
+              availableBeds: available.length,
+              requestedBeds: employeeIds.length,
+              hasExplicitBeds: Boolean(input.bedIds?.length),
+              employeeCategories,
+              employmentStatus: primaryEmployee?.employmentStatus ?? null,
+              eligibilityStatus: primaryEmployee?.eligibilityStatus ?? null,
+              subjectType: 'RESERVATION',
+              subjectId: created.id,
+            },
+            {
+              allowApproval: true,
+              actorUserId: req.auth!.user.id,
+              requestId: requestId(),
+              subjectType: 'RESERVATION',
+              subjectId: created.id,
+              exceptionTx: tx,
+            },
+          );
+          if (
+            policyResult.decision === 'REQUIRES_APPROVAL' ||
+            policyResult.decision === 'REQUIRES_MANUAL_REVIEW'
+          ) {
+            requiresApproval = true;
+          }
+          const initialStatus = requiresApproval ? 'PENDING_APPROVAL' : 'CONFIRMED';
+
+          await tx.reservation.update({
+            where: { id: created.id },
+            data: {
+              status: initialStatus,
+              approvalStatus: requiresApproval ? 'PENDING' : 'NOT_REQUIRED',
+              confirmedAt: requiresApproval ? null : new Date(),
               events: {
                 create: {
                   eventType: 'CREATED',
                   toStatus: initialStatus,
                   actorUserId: req.auth!.user.id,
-                  metadata: { source },
+                  metadata: { source, policyDecision: policyResult.decision },
                 },
               },
               ...(requiresApproval
@@ -471,7 +564,6 @@ reservationsRouter.post(
                   }
                 : {}),
             },
-            include: { guests: true },
           });
 
           for (const [index, guest] of created.guests.entries()) {
@@ -497,10 +589,65 @@ reservationsRouter.post(
       );
     } catch (error) {
       if (isAllocationConflict(error)) {
+        await safeRecordReservationException({
+          dedupeKey: allocationConflictKey(
+            input.dormitoryId,
+            input.checkInDate,
+            input.checkOutDate,
+            input.bedIds ?? [],
+          ),
+          type: 'ALLOCATION_CONFLICT',
+          severity: 'HIGH',
+          dormitoryId: input.dormitoryId,
+          title: 'Konflik alokasi saat membuat reservasi',
+          description:
+            'Tempat tidur yang dipilih sudah dialokasikan oleh permintaan lain pada rentang tanggal yang sama.',
+          evidence: {
+            checkInDate: input.checkInDate,
+            checkOutDate: input.checkOutDate,
+            occupantCount: input.occupantCount,
+            requestedBedIds: input.bedIds ?? [],
+          },
+          actorUserId: req.auth!.user.id,
+        });
         throw new ConflictError(
           ERROR_CODES.BED_ALLOCATION_CONFLICT,
           'The selected bed was allocated by another request',
         );
+      }
+      if (error instanceof ConflictError && error.code === ERROR_CODES.ROOM_UNAVAILABLE) {
+        const explicitBeds = Boolean(input.bedIds?.length);
+        await safeRecordReservationException({
+          dedupeKey: explicitBeds
+            ? allocationConflictKey(
+                input.dormitoryId,
+                input.checkInDate,
+                input.checkOutDate,
+                input.bedIds!,
+              )
+            : overbookingKey(
+                input.dormitoryId,
+                input.checkInDate,
+                input.checkOutDate,
+                input.occupantCount,
+              ),
+          type: explicitBeds ? 'ALLOCATION_CONFLICT' : 'OVERBOOKING',
+          severity: 'HIGH',
+          dormitoryId: input.dormitoryId,
+          title: explicitBeds
+            ? 'Tempat tidur pilihan tidak lagi tersedia'
+            : 'Kapasitas tempat tidur tidak mencukupi',
+          description: explicitBeds
+            ? 'Sebagian tempat tidur yang dipilih sudah terisi pada rentang tanggal yang diminta.'
+            : `Permintaan ${input.occupantCount} tempat tidur tidak dapat dipenuhi pada rentang tanggal yang diminta.`,
+          evidence: {
+            checkInDate: input.checkInDate,
+            checkOutDate: input.checkOutDate,
+            occupantCount: input.occupantCount,
+            requestedBedIds: input.bedIds ?? [],
+          },
+          actorUserId: req.auth!.user.id,
+        });
       }
       throw error;
     }
@@ -706,6 +853,45 @@ reservationsRouter.post(
         'Same-day or started reservations must be handled by front desk',
       );
     }
+    const cancelCheckIn = formatDateOnly(reservation.checkInDate);
+    const cancelCheckOut = formatDateOnly(reservation.checkOutDate);
+    const cancelMembers = [reservation.primaryEmployee, ...reservation.guests.map((guest) => guest.employee)];
+    await evaluateAndEnforce(
+      {
+        workflow: 'CANCELLATION',
+        asOfDate: todayInJakarta(),
+        dormitoryId: reservation.dormitoryId,
+        checkInDate: cancelCheckIn,
+        checkOutDate: cancelCheckOut,
+        nights: nightsBetween(cancelCheckIn, cancelCheckOut),
+        occupantCount: reservation.occupantCount,
+        priority: reservation.priority,
+        isEmergency: reservation.isEmergency,
+        employeeCategories: [
+          ...new Set(
+            cancelMembers.flatMap((member) =>
+              member
+                ? [
+                    ...(member.departmentCode ? [`dept:${member.departmentCode}`] : []),
+                    ...(member.divisionCode ? [`div:${member.divisionCode}`] : []),
+                    ...(member.positionCode ? [`pos:${member.positionCode}`] : []),
+                  ]
+                : [],
+            ),
+          ),
+        ],
+        cancellationNoticeHours: Math.max(0, hoursUntilJakartaStartOfDay(cancelCheckIn)),
+        sameDayCancellation: cancelCheckIn === todayInJakarta(),
+        subjectType: 'RESERVATION',
+        subjectId: id,
+      },
+      {
+        actorUserId: req.auth!.user.id,
+        requestId: requestId(),
+        subjectType: 'RESERVATION',
+        subjectId: id,
+      },
+    );
     const updated = await prisma.$transaction(async (tx) => {
       const claimed = await tx.reservation.updateMany({
         where: { id, status: reservation.status },
@@ -835,8 +1021,68 @@ reservationsRouter.post(
       req.access!,
     );
     if (available.length !== input.bedIds.length) {
+      await safeRecordReservationException({
+        dedupeKey: allocationConflictKey(
+          reservation.dormitoryId,
+          checkIn,
+          checkOut,
+          input.bedIds,
+        ),
+        type: 'ALLOCATION_CONFLICT',
+        severity: 'HIGH',
+        dormitoryId: reservation.dormitoryId,
+        reservationId: reservation.id,
+        title: 'Alokasi ulang gagal: tempat tidur tidak tersedia',
+        description: `Sebagian tempat tidur yang dipilih sudah terisi untuk reservasi ${reservation.bookingCode}.`,
+        evidence: {
+          checkInDate: checkIn,
+          checkOutDate: checkOut,
+          requestedBedIds: input.bedIds,
+          availableBedIds: available.map((bed) => bed.id),
+        },
+        actorUserId: req.auth!.user.id,
+      });
       throw new ConflictError(ERROR_CODES.ROOM_UNAVAILABLE, 'One or more beds are unavailable');
     }
+
+    const allocateMembers = [reservation.primaryEmployee, ...reservation.guests.map((guest) => guest.employee)];
+    await evaluateAndEnforce(
+      {
+        workflow: 'BED_ALLOCATION',
+        asOfDate: todayInJakarta(),
+        dormitoryId: reservation.dormitoryId,
+        checkInDate: checkIn,
+        checkOutDate: checkOut,
+        nights: nightsBetween(checkIn, checkOut),
+        occupantCount: reservation.guests.length,
+        priority: reservation.priority,
+        isEmergency: reservation.isEmergency,
+        availableBeds: available.length,
+        requestedBeds: input.bedIds.length,
+        hasExplicitBeds: true,
+        employeeCategories: [
+          ...new Set(
+            allocateMembers.flatMap((member) =>
+              member
+                ? [
+                    ...(member.departmentCode ? [`dept:${member.departmentCode}`] : []),
+                    ...(member.divisionCode ? [`div:${member.divisionCode}`] : []),
+                    ...(member.positionCode ? [`pos:${member.positionCode}`] : []),
+                  ]
+                : [],
+            ),
+          ),
+        ],
+        subjectType: 'RESERVATION',
+        subjectId: reservation.id,
+      },
+      {
+        actorUserId: req.auth!.user.id,
+        requestId: requestId(),
+        subjectType: 'RESERVATION',
+        subjectId: reservation.id,
+      },
+    );
 
     try {
       await prisma.$transaction(async (tx) => {
@@ -864,6 +1110,26 @@ reservationsRouter.post(
       });
     } catch (error) {
       if (isAllocationConflict(error)) {
+        await safeRecordReservationException({
+          dedupeKey: allocationConflictKey(
+            reservation.dormitoryId,
+            checkIn,
+            checkOut,
+            input.bedIds,
+          ),
+          type: 'ALLOCATION_CONFLICT',
+          severity: 'HIGH',
+          dormitoryId: reservation.dormitoryId,
+          reservationId: reservation.id,
+          title: 'Konflik alokasi saat menyimpan tempat tidur',
+          description: `Tempat tidur untuk reservasi ${reservation.bookingCode} dialokasikan bersamaan oleh permintaan lain.`,
+          evidence: {
+            checkInDate: checkIn,
+            checkOutDate: checkOut,
+            requestedBedIds: input.bedIds,
+          },
+          actorUserId: req.auth!.user.id,
+        });
         throw new ConflictError(ERROR_CODES.BED_ALLOCATION_CONFLICT, 'Bed allocation conflict');
       }
       throw error;

@@ -90,13 +90,14 @@ async function occupancyRows(
   const buildingOnly = access.buildingIds.length > 0 && access.dormitoryIds.length === 0;
   const dormitories = await prisma.dormitory.findMany({
     where: {
+      status: 'ACTIVE',
       ...(dormitoryId ? { id: dormitoryId } : {}),
       ...(access.global ? {} : readableDormitoryWhere(access)),
     },
     orderBy: { name: 'asc' },
     include: {
       buildings: {
-        ...(buildingOnly ? { where: { id: { in: access.buildingIds } } } : {}),
+        where: buildingOnly ? { id: { in: access.buildingIds } } : { status: 'ACTIVE' },
         include: {
           floors: {
             include: {
@@ -119,8 +120,9 @@ async function occupancyRows(
       stayEnd: { gt: today },
       bed: {
         room: {
+          operationalStatus: 'ACTIVE',
           floor: {
-            building: { dormitoryId: { in: dormitories.map((item) => item.id) } },
+            building: { dormitoryId: { in: dormitories.map((item) => item.id) }, status: 'ACTIVE' },
             ...(buildingOnly ? { buildingId: { in: access.buildingIds } } : {}),
           },
         },
