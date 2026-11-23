@@ -1,0 +1,1025 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  oidcIssuer     String?   @map("oidc_issuer") @db.VarChar(255)
+  oidcSubject    String?   @map("oidc_subject") @db.VarChar(255)
+  employeeId     String?   @map("employee_id") @db.Uuid
+  email          String    @unique @db.VarChar(255)
+  displayName    String    @map("display_name") @db.VarChar(150)
+  demoPasswordHash String? @map("demo_password_hash") @db.VarChar(255)
+  passwordHash     String? @map("password_hash") @db.VarChar(255)
+  telegramChatId   String? @map("telegram_chat_id") @db.VarChar(64)
+  status         String    @default("ACTIVE") @db.VarChar(30)
+  lastLoginAt    DateTime? @map("last_login_at") @db.Timestamptz(6)
+  createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt      DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  employee                 Employee?                @relation("UserEmployee", fields: [employeeId], references: [id], onDelete: SetNull)
+  roles                    UserRole[]
+  sessions                 Session[]
+  notifications            Notification[]
+  auditLogs                AuditLog[]
+  reservationsCreated      Reservation[]            @relation("ReservationCreatedBy")
+  reservationsApproved     Reservation[]            @relation("ReservationApprovedBy")
+  allocationsMade          BedAllocation[]          @relation("AllocationAllocatedBy")
+  reservationEvents        ReservationEvent[]
+  reservationApprovals     ReservationApproval[]
+  checkinsVerified         CheckinRecord[]          @relation("CheckinVerifiedBy")
+  checkoutsVerified        CheckoutRecord[]         @relation("CheckoutVerifiedBy")
+  housekeepingAssigned     HousekeepingTask[]       @relation("HousekeepingAssignedTo")
+  housekeepingVerified     HousekeepingTask[]       @relation("HousekeepingVerifiedBy")
+  checklistItemsCompleted  HousekeepingChecklistItem[]
+  ticketsReported          MaintenanceTicket[]      @relation("TicketReportedBy")
+  ticketsAssigned          MaintenanceTicket[]      @relation("TicketAssignedTo")
+  inventoryBlocksCreated   InventoryBlock[]         @relation("InventoryBlockCreatedBy")
+  employeeSyncLogs         EmployeeSyncLog[]        @relation("EmployeeSyncInitiatedBy")
+  rosterSyncRuns           RosterSyncRun[]          @relation("RosterSyncInitiatedBy")
+  integrationExceptions    IntegrationException[]   @relation("ExceptionResolvedBy")
+  attachments              Attachment[]
+  accommodationPhotos      AccommodationPhoto[]
+  researchReviews          AccommodationResearch[]  @relation("ResearchReviewedBy")
+  researchEvents           ResearchEvent[]          @relation("ResearchEventActor")
+
+  @@unique([oidcIssuer, oidcSubject])
+  @@index([employeeId])
+  @@map("users")
+}
+
+model Role {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  code        String   @unique @db.VarChar(50)
+  name        String   @db.VarChar(100)
+  description String?
+  isSystem    Boolean  @default(true) @map("is_system")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  userRoles       UserRole[]
+  rolePermissions RolePermission[]
+
+  @@map("roles")
+}
+
+model Permission {
+  id          String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  code        String  @unique @db.VarChar(100)
+  module      String  @db.VarChar(50)
+  action      String  @db.VarChar(50)
+  description String?
+
+  rolePermissions RolePermission[]
+
+  @@map("permissions")
+}
+
+model UserRole {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  roleId    String   @map("role_id") @db.Uuid
+  scopeType String   @map("scope_type") @db.VarChar(30)
+  scopeId   String?  @map("scope_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role Role @relation(fields: [roleId], references: [id], onDelete: Restrict)
+
+  @@index([userId])
+  @@index([roleId])
+  @@map("user_roles")
+}
+
+model RolePermission {
+  roleId       String @map("role_id") @db.Uuid
+  permissionId String @map("permission_id") @db.Uuid
+
+  role       Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Restrict)
+
+  @@id([roleId, permissionId])
+  @@map("role_permissions")
+}
+
+model Session {
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId     String    @map("user_id") @db.Uuid
+  tokenHash  String    @unique @map("token_hash") @db.VarChar(64)
+  expiresAt  DateTime  @map("expires_at") @db.Timestamptz(6)
+  createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  lastSeenAt DateTime  @default(now()) @map("last_seen_at") @db.Timestamptz(6)
+  revokedAt  DateTime? @map("revoked_at") @db.Timestamptz(6)
+  ipAddress  String?   @map("ip_address") @db.VarChar(45)
+  userAgent  String?   @map("user_agent")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, revokedAt])
+  @@map("sessions")
+}
+
+model SystemSetting {
+  key         String   @id @db.VarChar(100)
+  value       Json
+  description String?
+  updatedBy   String?  @map("updated_by") @db.Uuid
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@map("system_settings")
+}
+
+model Employee {
+  id                String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  sourceSystem      String    @map("source_system") @db.VarChar(50)
+  externalEmployeeId String   @map("external_employee_id") @db.VarChar(100)
+  employeeCode      String    @map("employee_code") @db.VarChar(50)
+  fullName          String    @map("full_name") @db.VarChar(150)
+  workEmail         String?   @map("work_email") @db.VarChar(255)
+  departmentCode    String?   @map("department_code") @db.VarChar(50)
+  departmentName    String?   @map("department_name") @db.VarChar(150)
+  divisionCode      String?   @map("division_code") @db.VarChar(50)
+  divisionName      String?   @map("division_name") @db.VarChar(150)
+  positionCode      String?   @map("position_code") @db.VarChar(50)
+  positionName      String?   @map("position_name") @db.VarChar(150)
+  homeStationCode   String?   @map("home_station_code") @db.VarChar(50)
+  joinDate          DateTime? @map("join_date") @db.Date
+  supervisorId      String?   @map("supervisor_id") @db.Uuid
+  employmentStatus  String    @map("employment_status") @db.VarChar(30)
+  eligibilityStatus String    @default("UNKNOWN") @map("eligibility_status") @db.VarChar(30)
+  sourceUpdatedAt   DateTime? @map("source_updated_at") @db.Timestamptz(6)
+  syncedAt          DateTime? @map("synced_at") @db.Timestamptz(6)
+  createdAt         DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt         DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  users                User[]                      @relation("UserEmployee")
+  reservations         Reservation[]              @relation("ReservationPrimaryEmployee")
+  reservationGuests    ReservationGuest[]
+  checkins             CheckinRecord[]
+  checkouts            CheckoutRecord[]
+  qrTokens             QrToken[]
+  rosterAssignments    RosterAssignment[]
+  recommendations      AccommodationRecommendation[]
+  supervisor           Employee?                   @relation("EmployeeSupervisor", fields: [supervisorId], references: [id], onDelete: SetNull)
+  subordinates         Employee[]                  @relation("EmployeeSupervisor")
+
+  @@unique([sourceSystem, externalEmployeeId])
+  @@index([employeeCode])
+  @@index([fullName])
+  @@index([supervisorId])
+  @@map("employees")
+}
+
+model OrgReference {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  type         String   @db.VarChar(30)
+  code         String   @db.VarChar(50)
+  name         String   @db.VarChar(150)
+  status       String   @default("UNCONFIRMED") @db.VarChar(30)
+  sourceSystem String   @default("SYNTHETIC") @map("source_system") @db.VarChar(50)
+  description  String?
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@unique([type, code])
+  @@index([type, status])
+  @@map("org_references")
+}
+
+model EmployeeSyncLog {
+  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  sourceSystem   String    @map("source_system") @db.VarChar(50)
+  startedAt      DateTime  @default(now()) @map("started_at") @db.Timestamptz(6)
+  finishedAt     DateTime? @map("finished_at") @db.Timestamptz(6)
+  status         String    @db.VarChar(30)
+  fetchedCount   Int       @default(0) @map("fetched_count")
+  insertedCount  Int       @default(0) @map("inserted_count")
+  updatedCount   Int       @default(0) @map("updated_count")
+  failedCount    Int       @default(0) @map("failed_count")
+  errorSummary   String?   @map("error_summary")
+  initiatedBy    String?   @map("initiated_by") @db.Uuid
+
+  initiatedByUser User? @relation("EmployeeSyncInitiatedBy", fields: [initiatedBy], references: [id], onDelete: SetNull)
+
+  @@index([sourceSystem, startedAt])
+  @@map("employee_sync_logs")
+}
+
+model EmployeeImportBatch {
+  id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  fileName      String    @map("file_name") @db.VarChar(255)
+  status        String    @default("PREVIEWED") @db.VarChar(30)
+  rowCount      Int       @default(0) @map("row_count")
+  validCount    Int       @default(0) @map("valid_count")
+  invalidCount  Int       @default(0) @map("invalid_count")
+  insertedCount Int       @default(0) @map("inserted_count")
+  updatedCount  Int       @default(0) @map("updated_count")
+  errorSummary  String?   @map("error_summary")
+  uploadedBy    String?   @map("uploaded_by") @db.Uuid
+  committedBy   String?   @map("committed_by") @db.Uuid
+  createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  committedAt   DateTime? @map("committed_at") @db.Timestamptz(6)
+
+  rows EmployeeImportRow[]
+
+  @@index([status, createdAt])
+  @@map("employee_import_batches")
+}
+
+model EmployeeImportRow {
+  id         String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  batchId    String  @map("batch_id") @db.Uuid
+  rowNumber  Int     @map("row_number")
+  data       Json
+  errors     Json
+  action     String  @db.VarChar(20)
+  employeeId String? @map("employee_id") @db.Uuid
+
+  batch EmployeeImportBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+
+  @@index([batchId])
+  @@map("employee_import_rows")
+}
+
+model MasterImportBatch {
+  id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  entity        String    @db.VarChar(30)
+  fileName      String    @map("file_name") @db.VarChar(255)
+  status        String    @default("PREVIEWED") @db.VarChar(30)
+  rowCount      Int       @default(0) @map("row_count")
+  validCount    Int       @default(0) @map("valid_count")
+  invalidCount  Int       @default(0) @map("invalid_count")
+  insertedCount Int       @default(0) @map("inserted_count")
+  updatedCount  Int       @default(0) @map("updated_count")
+  errorSummary  String?   @map("error_summary")
+  uploadedBy    String?   @map("uploaded_by") @db.Uuid
+  committedBy   String?   @map("committed_by") @db.Uuid
+  createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  committedAt   DateTime? @map("committed_at") @db.Timestamptz(6)
+
+  rows MasterImportRow[]
+
+  @@index([entity, createdAt])
+  @@map("master_import_batches")
+}
+
+model MasterImportRow {
+  id        String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  batchId   String  @map("batch_id") @db.Uuid
+  rowNumber Int     @map("row_number")
+  data      Json
+  errors    Json
+  action    String  @db.VarChar(20)
+  entityId  String? @map("entity_id") @db.Uuid
+
+  batch MasterImportBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+
+  @@index([batchId])
+  @@map("master_import_rows")
+}
+
+model Location {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  code        String   @unique @db.VarChar(40)
+  name        String   @db.VarChar(150)
+  description String?
+  address     String?
+  status      String   @default("ACTIVE") @db.VarChar(30)
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  createdBy   String?  @map("created_by") @db.Uuid
+  updatedBy   String?  @map("updated_by") @db.Uuid
+
+  dormitories Dormitory[]
+  researchCandidates AccommodationResearch[]
+
+  @@index([status])
+  @@map("locations")
+}
+
+model Dormitory {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  code         String   @unique @db.VarChar(40)
+  name         String   @db.VarChar(150)
+  description  String?
+  address      String?
+  latitude     Decimal? @db.Decimal(10, 7)
+  longitude    Decimal? @db.Decimal(10, 7)
+  stationCode  String?  @map("station_code") @db.VarChar(50)
+  locationId   String?  @map("location_id") @db.Uuid
+  contactName  String?  @map("contact_name") @db.VarChar(150)
+  contactPhone String?  @map("contact_phone") @db.VarChar(40)
+  status       String   @default("ACTIVE") @db.VarChar(30)
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  createdBy    String?  @map("created_by") @db.Uuid
+  updatedBy    String?  @map("updated_by") @db.Uuid
+
+  buildings    Building[]
+  reservations Reservation[]
+  photos       AccommodationPhoto[]
+  location     Location? @relation(fields: [locationId], references: [id], onDelete: SetNull)
+  promotedFromResearch AccommodationResearch[] @relation("ResearchPromotedDormitory")
+
+  @@index([stationCode, status])
+  @@index([locationId])
+  @@map("dormitories")
+}
+
+model AccommodationResearch {
+  id                  String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  locationId          String    @map("location_id") @db.Uuid
+  name                String    @db.VarChar(200)
+  address             String?
+  latitude            Decimal?  @db.Decimal(10, 7)
+  longitude           Decimal?  @db.Decimal(10, 7)
+  distanceKm          Decimal?  @map("distance_km") @db.Decimal(6, 2)
+  propertyType        String?   @map("property_type") @db.VarChar(60)
+  classification      String    @default("RESEARCH_CANDIDATE") @db.VarChar(40)
+  verificationStatus  String    @default("PENDING") @map("verification_status") @db.VarChar(40)
+  facilities          Json?
+  website             String?   @db.VarChar(500)
+  contactName         String?   @map("contact_name") @db.VarChar(150)
+  contactPhone        String?   @map("contact_phone") @db.VarChar(60)
+  notes               String?
+  promotedDormitoryId String?   @map("promoted_dormitory_id") @db.Uuid
+  reviewedBy          String?   @map("reviewed_by") @db.Uuid
+  reviewedAt          DateTime? @map("reviewed_at") @db.Timestamptz(6)
+  createdBy           String?   @map("created_by") @db.Uuid
+  createdAt           DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt           DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  location          Location         @relation(fields: [locationId], references: [id], onDelete: Restrict)
+  promotedDormitory Dormitory?       @relation("ResearchPromotedDormitory", fields: [promotedDormitoryId], references: [id], onDelete: SetNull)
+  reviewer          User?            @relation("ResearchReviewedBy", fields: [reviewedBy], references: [id], onDelete: SetNull)
+  sources           ResearchSource[]
+  events            ResearchEvent[]
+
+  @@unique([locationId, name])
+  @@index([classification])
+  @@index([verificationStatus])
+  @@map("accommodation_research")
+}
+
+model ResearchSource {
+  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  researchId   String    @map("research_id") @db.Uuid
+  url          String    @db.VarChar(1000)
+  title        String?   @db.VarChar(300)
+  sourceType   String    @map("source_type") @db.VarChar(40)
+  checkedAt    DateTime  @map("checked_at") @db.Date
+  photoUrl     String?   @map("photo_url") @db.VarChar(1000)
+  photoRights  String?   @map("photo_rights") @db.VarChar(200)
+  photoTakenAt DateTime? @map("photo_taken_at") @db.Date
+  notes        String?
+  createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  research AccommodationResearch @relation(fields: [researchId], references: [id], onDelete: Cascade)
+
+  @@index([researchId])
+  @@map("research_sources")
+}
+
+model ResearchEvent {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  researchId  String   @map("research_id") @db.Uuid
+  actorUserId String?  @map("actor_user_id") @db.Uuid
+  action      String   @db.VarChar(60)
+  fromStatus  String?  @map("from_status") @db.VarChar(40)
+  toStatus    String?  @map("to_status") @db.VarChar(40)
+  note        String?
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  research AccommodationResearch @relation(fields: [researchId], references: [id], onDelete: Cascade)
+  actor    User?                 @relation("ResearchEventActor", fields: [actorUserId], references: [id], onDelete: SetNull)
+
+  @@index([researchId, createdAt(sort: Desc)])
+  @@map("research_events")
+}
+
+model Building {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  dormitoryId String   @map("dormitory_id") @db.Uuid
+  code        String   @db.VarChar(40)
+  name        String   @db.VarChar(150)
+  status      String   @default("ACTIVE") @db.VarChar(30)
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  dormitory Dormitory @relation(fields: [dormitoryId], references: [id], onDelete: Restrict)
+  floors    Floor[]
+
+  @@unique([dormitoryId, code])
+  @@map("buildings")
+}
+
+model Floor {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  buildingId  String   @map("building_id") @db.Uuid
+  floorNumber Int      @map("floor_number")
+  name        String   @db.VarChar(100)
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  building Building @relation(fields: [buildingId], references: [id], onDelete: Restrict)
+  rooms    Room[]
+
+  @@unique([buildingId, floorNumber])
+  @@map("floors")
+}
+
+model RoomType {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  code            String   @unique @db.VarChar(40)
+  name            String   @db.VarChar(100)
+  description     String?
+  defaultCapacity Int      @map("default_capacity")
+  status          String   @default("ACTIVE") @db.VarChar(30)
+  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt       DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  rooms Room[]
+
+  @@map("room_types")
+}
+
+model Room {
+  id                 String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  floorId            String   @map("floor_id") @db.Uuid
+  roomTypeId         String   @map("room_type_id") @db.Uuid
+  roomNumber         String   @map("room_number") @db.VarChar(40)
+  name               String?  @db.VarChar(100)
+  description        String?
+  genderPolicy       String   @default("UNSPECIFIED") @map("gender_policy") @db.VarChar(30)
+  operationalStatus  String   @default("ACTIVE") @map("operational_status") @db.VarChar(30)
+  housekeepingStatus String   @default("READY") @map("housekeeping_status") @db.VarChar(30)
+  statusReason       String?  @map("status_reason")
+  createdAt          DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt          DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  floor               Floor                @relation(fields: [floorId], references: [id], onDelete: Restrict)
+  roomType            RoomType             @relation(fields: [roomTypeId], references: [id], onDelete: Restrict)
+  beds                Bed[]
+  roomFacilities      RoomFacility[]
+  inventoryBlocks     InventoryBlock[]
+  housekeepingTasks   HousekeepingTask[]
+  maintenanceTickets  MaintenanceTicket[]
+  photos              AccommodationPhoto[]
+
+  @@unique([floorId, roomNumber])
+  @@index([roomTypeId])
+  @@index([operationalStatus, housekeepingStatus])
+  @@map("rooms")
+}
+
+model Bed {
+  id                 String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  roomId             String   @map("room_id") @db.Uuid
+  bedCode            String   @map("bed_code") @db.VarChar(40)
+  label              String?  @db.VarChar(80)
+  status             String   @default("ACTIVE") @db.VarChar(30)
+  housekeepingStatus String   @default("READY") @map("housekeeping_status") @db.VarChar(30)
+  statusReason       String?  @map("status_reason")
+  createdAt          DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt          DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  room              Room               @relation(fields: [roomId], references: [id], onDelete: Restrict)
+  allocations       BedAllocation[]
+  inventoryBlocks   InventoryBlock[]
+  housekeepingTasks HousekeepingTask[]
+  maintenanceTickets MaintenanceTicket[]
+
+  @@unique([roomId, bedCode])
+  @@index([status, housekeepingStatus])
+  @@map("beds")
+}
+
+model Facility {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  code        String   @unique @db.VarChar(50)
+  name        String   @db.VarChar(100)
+  description String?
+  status      String   @default("ACTIVE") @db.VarChar(30)
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  roomFacilities RoomFacility[]
+
+  @@map("facilities")
+}
+
+model RoomFacility {
+  roomId     String  @map("room_id") @db.Uuid
+  facilityId String  @map("facility_id") @db.Uuid
+  quantity   Int?
+  notes      String?
+
+  room     Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  facility Facility @relation(fields: [facilityId], references: [id], onDelete: Restrict)
+
+  @@id([roomId, facilityId])
+  @@map("room_facilities")
+}
+
+model InventoryBlock {
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  roomId         String?  @map("room_id") @db.Uuid
+  bedId          String?  @map("bed_id") @db.Uuid
+  startAt        DateTime @map("start_at") @db.Timestamptz(6)
+  endAt          DateTime @map("end_at") @db.Timestamptz(6)
+  blockType      String   @map("block_type") @db.VarChar(30)
+  reason         String
+  sourceTicketId String?  @map("source_ticket_id") @db.Uuid
+  createdBy      String   @map("created_by") @db.Uuid
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  room         Room?             @relation(fields: [roomId], references: [id], onDelete: Restrict)
+  bed          Bed?              @relation(fields: [bedId], references: [id], onDelete: Restrict)
+  sourceTicket MaintenanceTicket? @relation("TicketBlocks", fields: [sourceTicketId], references: [id], onDelete: SetNull)
+  createdByUser User             @relation("InventoryBlockCreatedBy", fields: [createdBy], references: [id], onDelete: Restrict)
+
+  @@index([roomId, startAt, endAt])
+  @@index([bedId, startAt, endAt])
+  @@map("inventory_blocks")
+}
+
+model Reservation {
+  id                 String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  bookingCode        String    @unique @map("booking_code") @db.VarChar(40)
+  primaryEmployeeId  String    @map("primary_employee_id") @db.Uuid
+  dormitoryId        String    @map("dormitory_id") @db.Uuid
+  source             String    @db.VarChar(20)
+  sourceReference    String?   @map("source_reference") @db.VarChar(150)
+  idempotencyKey     String?   @map("idempotency_key") @db.VarChar(150)
+  checkInDate        DateTime  @map("check_in_date") @db.Date
+  checkOutDate       DateTime  @map("check_out_date") @db.Date
+  occupantCount      Int       @map("occupant_count")
+  purpose            String?
+  status             String    @default("DRAFT") @db.VarChar(30)
+  approvalStatus     String    @default("NOT_REQUIRED") @map("approval_status") @db.VarChar(30)
+  requestedAt        DateTime  @default(now()) @map("requested_at") @db.Timestamptz(6)
+  confirmedAt        DateTime? @map("confirmed_at") @db.Timestamptz(6)
+  cancelledAt        DateTime? @map("cancelled_at") @db.Timestamptz(6)
+  cancellationReason String?   @map("cancellation_reason")
+  approvedBy         String?   @map("approved_by") @db.Uuid
+  approvedAt         DateTime? @map("approved_at") @db.Timestamptz(6)
+  createdBy          String?   @map("created_by") @db.Uuid
+  createdAt          DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt          DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  primaryEmployee Employee? @relation("ReservationPrimaryEmployee", fields: [primaryEmployeeId], references: [id], onDelete: Restrict)
+  dormitory      Dormitory @relation(fields: [dormitoryId], references: [id], onDelete: Restrict)
+  creator        User?     @relation("ReservationCreatedBy", fields: [createdBy], references: [id], onDelete: SetNull)
+  approver       User?     @relation("ReservationApprovedBy", fields: [approvedBy], references: [id], onDelete: SetNull)
+
+  guests            ReservationGuest[]
+  allocations       BedAllocation[]
+  events            ReservationEvent[]
+  approvals         ReservationApproval[]
+  checkins          CheckinRecord[]
+  checkouts         CheckoutRecord[]
+  qrTokens          QrToken[]
+  housekeepingTasks HousekeepingTask[]
+  recommendations   AccommodationRecommendation[]
+
+  @@index([status, checkInDate, checkOutDate])
+  @@index([primaryEmployeeId, createdAt(sort: Desc)])
+  @@index([dormitoryId, checkInDate])
+  @@index([requestedAt(sort: Desc), id])
+  @@map("reservations")
+}
+
+model ReservationGuest {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  reservationId String   @map("reservation_id") @db.Uuid
+  employeeId    String   @map("employee_id") @db.Uuid
+  guestRole     String   @map("guest_role") @db.VarChar(30)
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  reservation Reservation      @relation(fields: [reservationId], references: [id], onDelete: Cascade)
+  employee    Employee         @relation(fields: [employeeId], references: [id], onDelete: Restrict)
+  allocations BedAllocation[]
+
+  @@unique([reservationId, employeeId])
+  @@index([employeeId])
+  @@map("reservation_guests")
+}
+
+model BedAllocation {
+  id                 String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  reservationId      String    @map("reservation_id") @db.Uuid
+  reservationGuestId String    @map("reservation_guest_id") @db.Uuid
+  bedId              String    @map("bed_id") @db.Uuid
+  stayStart          DateTime  @map("stay_start") @db.Date
+  stayEnd            DateTime  @map("stay_end") @db.Date
+  status             String    @default("HELD") @db.VarChar(30)
+  allocatedAt        DateTime  @default(now()) @map("allocated_at") @db.Timestamptz(6)
+  releasedAt         DateTime? @map("released_at") @db.Timestamptz(6)
+  allocatedBy        String?   @map("allocated_by") @db.Uuid
+
+  reservation      Reservation     @relation(fields: [reservationId], references: [id], onDelete: Restrict)
+  reservationGuest ReservationGuest @relation(fields: [reservationGuestId], references: [id], onDelete: Restrict)
+  bed              Bed             @relation(fields: [bedId], references: [id], onDelete: Restrict)
+  allocatedByUser  User?           @relation("AllocationAllocatedBy", fields: [allocatedBy], references: [id], onDelete: SetNull)
+
+  @@index([bedId, stayStart, stayEnd, status])
+  @@index([reservationId])
+  @@map("bed_allocations")
+}
+
+model ReservationEvent {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  reservationId String   @map("reservation_id") @db.Uuid
+  eventType     String   @map("event_type") @db.VarChar(50)
+  fromStatus    String?  @map("from_status") @db.VarChar(30)
+  toStatus      String?  @map("to_status") @db.VarChar(30)
+  reason        String?
+  actorUserId   String?  @map("actor_user_id") @db.Uuid
+  metadata      Json?
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  reservation Reservation @relation(fields: [reservationId], references: [id], onDelete: Cascade)
+  actor       User?       @relation(fields: [actorUserId], references: [id], onDelete: SetNull)
+
+  @@index([reservationId, createdAt])
+  @@map("reservation_events")
+}
+
+model ReservationApproval {
+  id               String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  reservationId    String    @map("reservation_id") @db.Uuid
+  stepNumber       Int       @map("step_number")
+  approverRoleCode String    @map("approver_role_code") @db.VarChar(50)
+  approverUserId   String?   @map("approver_user_id") @db.Uuid
+  status           String    @db.VarChar(30)
+  decisionAt       DateTime? @map("decision_at") @db.Timestamptz(6)
+  comments         String?
+  createdAt        DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  reservation Reservation @relation(fields: [reservationId], references: [id], onDelete: Cascade)
+  approver    User?       @relation(fields: [approverUserId], references: [id], onDelete: SetNull)
+
+  @@unique([reservationId, stepNumber])
+  @@map("reservation_approvals")
+}
+
+model CheckinRecord {
+  id                 String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  reservationId      String   @map("reservation_id") @db.Uuid
+  employeeId         String   @map("employee_id") @db.Uuid
+  checkedInAt        DateTime @default(now()) @map("checked_in_at") @db.Timestamptz(6)
+  verifiedBy         String   @map("verified_by") @db.Uuid
+  verificationMethod String   @map("verification_method") @db.VarChar(30)
+  notes              String?
+
+  reservation Reservation @relation(fields: [reservationId], references: [id], onDelete: Cascade)
+  employee    Employee    @relation(fields: [employeeId], references: [id], onDelete: Restrict)
+  verifiedByUser User    @relation("CheckinVerifiedBy", fields: [verifiedBy], references: [id], onDelete: Restrict)
+
+  @@unique([reservationId, employeeId])
+  @@map("checkin_records")
+}
+
+model CheckoutRecord {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  reservationId String   @map("reservation_id") @db.Uuid
+  employeeId    String   @map("employee_id") @db.Uuid
+  checkedOutAt  DateTime @default(now()) @map("checked_out_at") @db.Timestamptz(6)
+  verifiedBy    String   @map("verified_by") @db.Uuid
+  roomCondition String   @map("room_condition") @db.VarChar(30)
+  notes         String?
+
+  reservation Reservation @relation(fields: [reservationId], references: [id], onDelete: Cascade)
+  employee    Employee    @relation(fields: [employeeId], references: [id], onDelete: Restrict)
+  verifiedByUser User    @relation("CheckoutVerifiedBy", fields: [verifiedBy], references: [id], onDelete: Restrict)
+
+  @@unique([reservationId, employeeId])
+  @@map("checkout_records")
+}
+
+model QrToken {
+  id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  reservationId String    @map("reservation_id") @db.Uuid
+  employeeId    String    @map("employee_id") @db.Uuid
+  tokenHash     String    @unique @map("token_hash") @db.VarChar(255)
+  expiresAt     DateTime  @map("expires_at") @db.Timestamptz(6)
+  consumedAt    DateTime? @map("consumed_at") @db.Timestamptz(6)
+  createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  reservation Reservation @relation(fields: [reservationId], references: [id], onDelete: Cascade)
+  employee    Employee    @relation(fields: [employeeId], references: [id], onDelete: Restrict)
+
+  @@index([reservationId, employeeId, consumedAt])
+  @@map("qr_tokens")
+}
+
+model HousekeepingTask {
+  id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  roomId        String    @map("room_id") @db.Uuid
+  bedId         String?   @map("bed_id") @db.Uuid
+  reservationId String?   @map("reservation_id") @db.Uuid
+  assignedTo    String?   @map("assigned_to") @db.Uuid
+  taskType      String    @map("task_type") @db.VarChar(40)
+  status        String    @default("PENDING") @db.VarChar(30)
+  scheduledAt   DateTime? @map("scheduled_at") @db.Timestamptz(6)
+  startedAt     DateTime? @map("started_at") @db.Timestamptz(6)
+  completedAt   DateTime? @map("completed_at") @db.Timestamptz(6)
+  verifiedBy    String?   @map("verified_by") @db.Uuid
+  verifiedAt    DateTime? @map("verified_at") @db.Timestamptz(6)
+  notes         String?
+  createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt     DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  room        Room        @relation(fields: [roomId], references: [id], onDelete: Restrict)
+  bed         Bed?        @relation(fields: [bedId], references: [id], onDelete: SetNull)
+  reservation Reservation? @relation(fields: [reservationId], references: [id], onDelete: SetNull)
+  assignedToUser User?    @relation("HousekeepingAssignedTo", fields: [assignedTo], references: [id], onDelete: SetNull)
+  verifiedByUser User?    @relation("HousekeepingVerifiedBy", fields: [verifiedBy], references: [id], onDelete: SetNull)
+  checklistItems HousekeepingChecklistItem[]
+
+  @@index([status, scheduledAt])
+  @@index([roomId, status])
+  @@map("housekeeping_tasks")
+}
+
+model HousekeepingChecklistItem {
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  taskId      String    @map("task_id") @db.Uuid
+  itemLabel   String    @map("item_label") @db.VarChar(150)
+  isCompleted Boolean   @default(false) @map("is_completed")
+  notes       String?
+  completedBy String?   @map("completed_by") @db.Uuid
+  completedAt DateTime? @map("completed_at") @db.Timestamptz(6)
+
+  task            HousekeepingTask @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  completedByUser User?            @relation(fields: [completedBy], references: [id], onDelete: SetNull)
+
+  @@index([taskId])
+  @@map("housekeeping_checklist_items")
+}
+
+model MaintenanceTicket {
+  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  ticketCode     String    @unique @map("ticket_code") @db.VarChar(40)
+  roomId         String?   @map("room_id") @db.Uuid
+  bedId          String?   @map("bed_id") @db.Uuid
+  category       String    @db.VarChar(50)
+  priority       String    @db.VarChar(20)
+  description    String
+  status         String    @default("OPEN") @db.VarChar(30)
+  blocksInventory Boolean  @default(false) @map("blocks_inventory")
+  reportedBy     String    @map("reported_by") @db.Uuid
+  assignedTo     String?   @map("assigned_to") @db.Uuid
+  reportedAt     DateTime  @default(now()) @map("reported_at") @db.Timestamptz(6)
+  resolvedAt     DateTime? @map("resolved_at") @db.Timestamptz(6)
+  closedAt       DateTime? @map("closed_at") @db.Timestamptz(6)
+  resolutionNotes String?  @map("resolution_notes")
+  createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  room            Room?            @relation(fields: [roomId], references: [id], onDelete: Restrict)
+  bed             Bed?             @relation(fields: [bedId], references: [id], onDelete: SetNull)
+  reporter        User             @relation("TicketReportedBy", fields: [reportedBy], references: [id], onDelete: Restrict)
+  assignee        User?            @relation("TicketAssignedTo", fields: [assignedTo], references: [id], onDelete: SetNull)
+  inventoryBlocks InventoryBlock[] @relation("TicketBlocks")
+
+  @@index([status, priority, reportedAt])
+  @@map("maintenance_tickets")
+}
+
+model RosterAssignment {
+  id                String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  sourceSystem      String    @map("source_system") @db.VarChar(50)
+  externalRosterId  String    @map("external_roster_id") @db.VarChar(120)
+  employeeId        String    @map("employee_id") @db.Uuid
+  dutyDate          DateTime  @map("duty_date") @db.Date
+  dutyStart         DateTime? @map("duty_start") @db.Timestamptz(6)
+  dutyEnd           DateTime? @map("duty_end") @db.Timestamptz(6)
+  stationCode       String?   @map("station_code") @db.VarChar(50)
+  rosterStatus      String    @map("roster_status") @db.VarChar(30)
+  payloadHash       String?   @map("payload_hash") @db.VarChar(128)
+  sourceUpdatedAt   DateTime? @map("source_updated_at") @db.Timestamptz(6)
+  syncedAt          DateTime  @default(now()) @map("synced_at") @db.Timestamptz(6)
+
+  employee        Employee                      @relation(fields: [employeeId], references: [id], onDelete: Restrict)
+  recommendations AccommodationRecommendation[]
+
+  @@unique([sourceSystem, externalRosterId])
+  @@index([employeeId, dutyDate])
+  @@index([dutyDate, stationCode, id])
+  @@map("roster_assignments")
+}
+
+model AccommodationPolicy {
+  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  code           String    @unique @db.VarChar(50)
+  name           String    @db.VarChar(150)
+  priority       Int       @default(100)
+  isActive       Boolean   @default(true) @map("is_active")
+  criteria       Json
+  rules          Json
+  approvalMode   String    @map("approval_mode") @db.VarChar(30)
+  effectiveFrom  DateTime? @map("effective_from") @db.Date
+  effectiveTo    DateTime? @map("effective_to") @db.Date
+  createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt      DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  recommendations AccommodationRecommendation[]
+
+  @@map("accommodation_policies")
+}
+
+model AccommodationRecommendation {
+  id                  String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  rosterAssignmentId  String   @map("roster_assignment_id") @db.Uuid
+  employeeId          String   @map("employee_id") @db.Uuid
+  policyId            String   @map("policy_id") @db.Uuid
+  suggestedCheckIn    DateTime @map("suggested_check_in") @db.Date
+  suggestedCheckOut   DateTime @map("suggested_check_out") @db.Date
+  suggestedDormitoryId String? @map("suggested_dormitory_id") @db.Uuid
+  status              String   @default("RECOMMENDED") @db.VarChar(30)
+  linkedReservationId String?  @map("linked_reservation_id") @db.Uuid
+  explanation         Json?
+  createdAt           DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt           DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  rosterAssignment RosterAssignment @relation(fields: [rosterAssignmentId], references: [id], onDelete: Restrict)
+  employee         Employee         @relation(fields: [employeeId], references: [id], onDelete: Restrict)
+  policy           AccommodationPolicy @relation(fields: [policyId], references: [id], onDelete: Restrict)
+  linkedReservation Reservation?    @relation(fields: [linkedReservationId], references: [id], onDelete: SetNull)
+
+  @@index([employeeId, status])
+  @@map("accommodation_recommendations")
+}
+
+model RosterSyncRun {
+  id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  sourceSystem  String    @map("source_system") @db.VarChar(50)
+  startedAt     DateTime  @default(now()) @map("started_at") @db.Timestamptz(6)
+  completedAt   DateTime? @map("completed_at") @db.Timestamptz(6)
+  status        String    @db.VarChar(30)
+  fetchedCount  Int       @default(0) @map("fetched_count")
+  createdCount  Int       @default(0) @map("created_count")
+  updatedCount  Int       @default(0) @map("updated_count")
+  unchangedCount Int      @default(0) @map("unchanged_count")
+  failedCount   Int       @default(0) @map("failed_count")
+  initiatedBy   String?   @map("initiated_by") @db.Uuid
+  errorSummary  String?   @map("error_summary")
+
+  initiatedByUser User? @relation("RosterSyncInitiatedBy", fields: [initiatedBy], references: [id], onDelete: SetNull)
+
+  @@index([sourceSystem, startedAt])
+  @@map("roster_sync_runs")
+}
+
+model IntegrationException {
+  id                String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  integrationType   String    @map("integration_type") @db.VarChar(40)
+  externalReference String?   @map("external_reference") @db.VarChar(150)
+  entityType        String    @map("entity_type") @db.VarChar(50)
+  entityId          String?   @map("entity_id") @db.Uuid
+  exceptionCode     String    @map("exception_code") @db.VarChar(60)
+  message           String
+  status            String    @default("OPEN") @db.VarChar(30)
+  resolutionNotes   String?   @map("resolution_notes")
+  resolvedBy        String?   @map("resolved_by") @db.Uuid
+  resolvedAt        DateTime? @map("resolved_at") @db.Timestamptz(6)
+  createdAt         DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  resolvedByUser User? @relation("ExceptionResolvedBy", fields: [resolvedBy], references: [id], onDelete: SetNull)
+
+  @@index([status, integrationType, createdAt])
+  @@map("integration_exceptions")
+}
+
+model Notification {
+  id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId        String    @map("user_id") @db.Uuid
+  eventCode     String    @map("event_code") @db.VarChar(60)
+  title         String    @db.VarChar(180)
+  body          String
+  readAt        DateTime? @map("read_at") @db.Timestamptz(6)
+  referenceType String?   @map("reference_type") @db.VarChar(50)
+  referenceId   String?   @map("reference_id") @db.Uuid
+  createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  user       User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  deliveries NotificationDelivery[]
+
+  @@index([userId, readAt, createdAt(sort: Desc)])
+  @@map("notifications")
+}
+
+model NotificationTemplate {
+  id              String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  eventCode       String  @map("event_code") @db.VarChar(60)
+  channel         String  @db.VarChar(30)
+  subjectTemplate String? @map("subject_template") @db.VarChar(255)
+  bodyTemplate    String  @map("body_template")
+  isActive        Boolean @default(true) @map("is_active")
+
+  @@unique([eventCode, channel])
+  @@map("notification_templates")
+}
+
+model NotificationDelivery {
+  id                String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  notificationId    String?   @map("notification_id") @db.Uuid
+  channel           String    @db.VarChar(30)
+  recipient         String    @db.VarChar(255)
+  status            String    @db.VarChar(30)
+  providerMessageId String?   @map("provider_message_id") @db.VarChar(150)
+  attemptCount      Int       @default(0) @map("attempt_count")
+  lastError         String?   @map("last_error")
+  sentAt            DateTime? @map("sent_at") @db.Timestamptz(6)
+  createdAt         DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  notification Notification? @relation(fields: [notificationId], references: [id], onDelete: SetNull)
+
+  @@index([status, attemptCount])
+  @@index([createdAt(sort: Desc), id])
+  @@map("notification_deliveries")
+}
+
+model Attachment {
+  id               String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  objectKey        String   @unique @map("object_key") @db.VarChar(500)
+  originalFilename String   @map("original_filename") @db.VarChar(255)
+  mimeType         String   @map("mime_type") @db.VarChar(120)
+  sizeBytes        BigInt   @map("size_bytes")
+  checksum         String?  @db.VarChar(128)
+  entityType       String   @map("entity_type") @db.VarChar(50)
+  entityId         String   @map("entity_id") @db.Uuid
+  uploadedBy       String   @map("uploaded_by") @db.Uuid
+  createdAt        DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  uploadedByUser User @relation(fields: [uploadedBy], references: [id], onDelete: Restrict)
+
+  @@index([entityType, entityId])
+  @@map("attachments")
+}
+
+enum AccommodationPhotoCategory {
+  BEDROOM
+  BED
+  BATHROOM
+  WARDROBE
+  DESK
+  FACILITY
+
+  @@map("accommodation_photo_category")
+}
+
+model AccommodationPhoto {
+  id               String                      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  dormitoryId      String                      @map("dormitory_id") @db.Uuid
+  roomId           String?                     @map("room_id") @db.Uuid
+  category         AccommodationPhotoCategory  @default(BEDROOM)
+  caption          String?                     @db.VarChar(200)
+  sortOrder        Int                         @default(0) @map("sort_order")
+  isCover          Boolean                     @default(false) @map("is_cover")
+  objectKey        String                      @map("object_key") @db.VarChar(500)
+  thumbnailKey     String                      @map("thumbnail_key") @db.VarChar(500)
+  mimeType         String                      @default("image/webp") @map("mime_type") @db.VarChar(120)
+  width            Int
+  height           Int
+  sizeBytes        BigInt                      @map("size_bytes")
+  originalFilename String                      @map("original_filename") @db.VarChar(255)
+  uploadedBy       String?                     @map("uploaded_by") @db.Uuid
+  createdAt        DateTime                    @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime                    @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  dormitory    Dormitory @relation(fields: [dormitoryId], references: [id], onDelete: Cascade)
+  room         Room?     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  uploadedByUser User?   @relation(fields: [uploadedBy], references: [id], onDelete: SetNull)
+
+  @@index([dormitoryId, sortOrder])
+  @@index([roomId, sortOrder])
+  @@index([dormitoryId, isCover])
+  @@map("accommodation_photos")
+}
+
+model AuditLog {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  actorUserId String?  @map("actor_user_id") @db.Uuid
+  action      String   @db.VarChar(80)
+  entityType  String   @map("entity_type") @db.VarChar(80)
+  entityId    String?  @map("entity_id") @db.Uuid
+  beforeData  Json?    @map("before_data")
+  afterData   Json?    @map("after_data")
+  reason      String?
+  requestId   String?  @map("request_id") @db.VarChar(100)
+  ipAddress   String?  @map("ip_address") @db.VarChar(45)
+  userAgent   String?  @map("user_agent")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  actor User? @relation(fields: [actorUserId], references: [id], onDelete: SetNull)
+
+  @@index([entityType, entityId, createdAt(sort: Desc)])
+  @@index([actorUserId, createdAt(sort: Desc)])
+  @@index([createdAt(sort: Desc), id])
+  @@map("audit_logs")
+}

@@ -1,0 +1,178 @@
+# Changelog
+
+All notable changes to Whoosh Stay are recorded here. Dates are ISO 8601.
+
+## [Unreleased]
+
+### Full-codebase audit fixes: security, integrity, frontend UX and infrastructure — 2026-11-23
+- Backend security/integrity: scope predicates no longer clobbered by `?q=` searches (reservations, inventory); reservation approve/reject/cancel/no-show are compare-and-set transitions that reject stale state with `RESERVATION_STATE_INVALID`; check-in/out verify QR↔reservation and QR↔guest binding, and completion counts real check-outs; employee/master imports claim batches `PREVIEWED → COMMITTING` so a batch cannot commit twice; passwords use async scrypt (`scrypt$N$r$p$salt$hash`) with legacy 3-part verification kept; per-account login throttling returns 429 + `Retry-After`; seed CLI refuses `SEED_DEMO` under `NODE_ENV=production`; date filters round-trip (`2026-02-31` and `not-a-date` → 400) in reservations, roster and reports; malformed/oversized JSON bodies map to 400/413; settings upsert is transactional; housekeeping notification failures no longer break task updates; empty-date report exports cannot silently fall back to a wrong range and exports report truncation headers.
+- Frontend UX/a11y: six list screens now use `useUrlSyncedSearch` so Back/Forward and URL edits stay in sync without render loops; `Field` injects `aria-invalid`/`aria-describedby` and announces errors with `role="alert"`; clickable table rows are keyboard operable (Enter/Space, focus ring); download helper revokes blob URLs after the click and keeps the download on error paths; logout clears local state and redirects even when the request fails; notification popover manages focus (opens into the panel, Escape returns to the trigger), exposes `aria-controls`, and filter buttons use `aria-pressed`. Added a global error boundary with reload/home recovery.
+- Infrastructure: `.env.example` now documents `AUTH_MODE=password` (dev), `API_RATE_LIMIT_MAX`, `ATTACHMENT_MAX_BYTES`, `GALLERY_PHOTO_MAX_BYTES`; CI generates `.env.test`/`.env.e2e`, creates `whoosh_stay_test` + `whoosh_stay_e2e`, pins read-only token permissions and a 60-minute timeout; `postgres/init.sql` creates the E2E database; nginx repeats security headers inside `location /assets/` (header inheritance); API runtime image prunes dev dependencies and copies the workspace-local Prisma client; the web build splits vendor React/Query/icons chunks. MinIO host ports moved to **9110/9111** because another project claimed the 9100/9101 loopback binding — no process was killed.
+- Employee routes crash fix (found during post-change dev crawl): `EmployeesPage` and `EmployeeDetailPage` imported `Link`/`useParams` from `react-router` while the app mounts `react-router-dom`, which created a second router context in dev and sent both routes to the error boundary; imports now come from `react-router-dom`.
+- Verification: root typecheck exit 0, root lint exit 0, production web build exit 0; unit **53/53**; integration **122/122** (21 files); full Playwright suite **91/91 passed (17.8 min)** on the isolated `whoosh_stay_e2e` fixture; design audit **130** (floor 118 / reflex 12, all recorded waivers) with no new findings in the touched files; dev stack health-checked at web 200 / API `/health/ready` 200 after the MinIO port move; post-fix dev crawl of all routes (50 views: anonymous guards, admin, crew, mobile) showed no error boundary, 5xx, page overflow or broken images — the only console entries were the expected `/auth/me` 401 before login; `management.spec.ts` re-run **4/4**.
+
+### Prepared external adapters — email, Telegram, HTTP employee sync (all inactive) — 2026-11-22 (D-053)
+- Notifications: added `SmtpEmailProvider` (nodemailer, injectable transport, timeout) and `TelegramProvider` (Bot API, `AbortSignal.timeout`, sanitized errors that never echo the token). `createNotification()` keeps the exact `MOCK_DELIVERED` path when no credentials exist, and switches to `SENT`/`FAILED` rows with provider message id, attempt count, error and sent time only when both credentials and the existing `notifications.*Enabled` settings are active. `GET /admin/notification-deliveries` now reports the real delivery mode (`MOCK` or `EMAIL:SMTP/TELEGRAM:TELEGRAM`). Reservation created/confirmed/rejected notifications now include the TELEGRAM channel.
+- Telegram binding: additive `users.telegram_chat_id` migration, self-only `GET/PUT /api/v1/auth/me/telegram` (numeric ID validation, audited `USER_TELEGRAM_CHAT_UPDATED` with only a linked/not-linked flag), and a "Notifikasi Telegram" card on the shared crew/management profile with save, persistence and unlink; missing bindings produce a truthful FAILED delivery instead of a mock success.
+- Employee sync: added `HttpEmployeeProvider` (configurable base URL/path/source system, bearer/api-key/basic auth, timeouts, injectable fetch, strict zod mapping for arrays or `items`/`data`/`employees` envelopes, camelCase or snake_case) plus `employeeSyncMode()` (`DISABLED`/`MOCK`/`CONFIGURED`). `EMPLOYEE_SYNC_ENABLED=false` keeps the DEMO provider; production still refuses the flag until the official contract is approved; dashboard and sync-run badges render `CONFIGURED` distinctly.
+- Config/docs: documented every new variable in `.env.example` (empty/false), added startup validation for SMTP completeness and sync credentials, and updated `docs/INTEGRATION_MAP.md`, `docs/DEPLOYMENT_RUNBOOK.md` and D-053 with activation steps.
+- Verification: prisma generate + `migrate deploy` on dev; typecheck exit 0; lint exit 0; production build exit 0; unit **53/53**; integration **116/116** (21 files); full Playwright suite **91/91 passed (12.7 min)** on the isolated `whoosh_stay_e2e` fixture (includes the new `profile-telegram` spec, which saves, reloads, persists and unlinks a chat ID in the browser); design audit unchanged at 129 (all waived); `db:verify` all checks passed with 12 migrations. No real external message was sent and no credentials were added.
+
+### Collapsible sidebar groups + unified design-review QC batch — 2026-11-22 (D-052, D-051)
+- Sidebar: every multi-destination group in the shared `AppSidebar` is now an accordion — button trigger with `aria-expanded`/`aria-controls`, single-open state, route-driven auto-open of the active category, 200 ms chevron rotation, `grid-template-rows` 1fr/0fr panel animation with `motion-reduce` fallback, and `invisible`+`inert` when closed so hidden links leave the tab order and a11y tree. Single-destination groups stay plain headings via the config `collapsible` flag. Collapsed-rail flyouts/tooltips, mobile drawer, ivory active child, `aria-current`, permissions and the exact `#8B1A1A` background are unchanged; no route, API, DB, RBAC or business-rule changes. `tests/e2e/sidebar-navigation.spec.ts` grew to 8/8 with an accordion test (toggle, single-open, deep-link auto-open, keyboard Enter/Space).
+- Design QC (project skill `whoosh-design-review` = ui-ux-pro-max direction + Hallmark audit): Hallmark findings **158 → 129** (floor 117 / reflex 12 / finish 0). Fixed: 48 colour literals 22→0 (new `@theme` tokens + gradient/shadow variables, `Logo.tsx`/`LoginPage.tsx`), 20 audit stamp 1→0, 26b `:active` states 1→0 (`AttachmentsPanel`), 11 duplicate hover-scale 1→0 (gallery thumbnails), F24 border+shadow 1→0 (notification popover), 10a decorative width/height animation 4→1 (dashboard occupancy/trend bars now animate `clip-path`). Waived on record: uppercase tracked brand labels (54/67), test-asserted Indonesian copy (19/63), sidebar width collapse animation (10a), glass surfaces (29), semantic status palette (74), dense calendar labels (49), below-fold lazy images (28a).
+- Test harness: the 18-route management axe scan now has a 120 s per-test timeout (a11y assertions unchanged) because 18 fresh axe analyses exceeded the 45 s default.
+- Verification: root typecheck exit 0, root lint exit 0; targeted batch 26/26; full Playwright suite **90/90 passed (13.0 min)** on the isolated `whoosh_stay_e2e` fixture; visual check of login and dashboard at 1440×900 and 360 px with zero horizontal overflow.
+
+### UI/UX audit closure batch (ui-ux-pro-max findings M1–M14, L1–L8) — 2026-11-22
+- Error/empty-state honesty: CrewHome exploration query got an inline warning + retry (bed counts stay visible); CrewBooking got a dormitories-load error hint + retry, a conditional bed-count header, a stale-bed clearing effect and a "Tidak tersedia lagi — pilih ulang" summary fallback; ManagementCalendar and ManagementAvailability dormitory filters got error hints + retry. Verified already-fixed: CrewSearch hero gallery error panel and availability ErrorState (stale audit entries corrected in `docs/UI_UX_REDESIGN.md`).
+- Dashboard truthfulness: Foundation section shows skeletons while loading and an ErrorState with retry on failure; all signal/trend/service values fall back to '—' instead of rendering 0 as real data; alert chip moved off non-system `red-400/15`/`red-200` to `brand-400/20`/`brand-200`.
+- Shared components: new `SearchInput` (ui.tsx) with exact icon alignment replaced 9 hand-rolled search toolbars across 8 pages (AuditLogs, CrewReservations, Employees, ManagementInventory, ManagementReservations, MasterData, Roster, Users×3), removing per-page `mt-1`/`mt-0.5` icon hacks; new `SkipLink` (ui.tsx) deduplicated the identical skip-link markup in both layout shells. CrewNotifications mark-read mutations got `onError` danger notices + pending disabling.
+- Token discipline: last raw hex in crew pages tokenized (`bg-sand-50`); CrewSearch arbitrary shadows → `var(--shadow-pop)`/`var(--shadow-soft)`; calendar rose shades → system danger red; gallery delete icon button aligned to Badge danger shades; shared `displayName` in `lib/format.ts` now imported by 8 crew pages (local duplicates removed); housekeeping readiness enums humanized. Semantic emerald/amber/red status hues kept by design (Badge tone convention); MiniStat kept as the compact in-card StatCard variant.
+- Documented deferrals: full crew/management `AppHeader` unification (shells intentionally differ; regression risk outweighs gain) and a polymorphic Button link variant (text-link pattern already consistent; hero CTAs are context-styled).
+- Verification: web typecheck exit 0, root lint exit 0, production build exit 0 (698 ms). Full Playwright regression re-run on the isolated e2e fixture after the batch: **89/89 passed (12.8 min)** — including a11y 4/4 (axe), responsive-audit 34/34, sidebar-navigation 7/7, master-data-access 8/8, employee-import 2/2, master-import 2/2.
+
+### Zero-demo operational baseline: password auth, admin bootstrap, safe demo purge, demo-display gating — 2026-11-22 (D-050)
+- Switched the development environment to `AUTH_MODE=password` + `SEED_DEMO=false`. Email/password login (`POST /api/v1/auth/login`, scrypt hashes, generic 401 without user enumeration, SUSPENDED/DISABLED 403, failed-login audit) is now the dev auth path; `dev-login` is unmounted outside mock mode (404). Production still refuses mock authentication; RBAC unchanged.
+- Added `apps/api/src/database/bootstrap-admin.ts`: secure first-admin CLI (min 12-char or generated one-time password, rejects demo email domain, never overwrites existing users, GLOBAL SYSTEM_ADMIN + `ADMIN_BOOTSTRAP` audit in one transaction). Bootstrapped `admin@whoosh-stay.local` on dev; the generated password was shown exactly once and must be rotated by the operator.
+- Executed the FK-safe transactional demo purge (`purge-demo.ts --execute`) after a verified backup (`backups/whoosh_stay-20261121T164157Z.dump`, SHA-256 `42a5f658…`) and a passed restore drill. Origin gate aborts on any non-demo operational data; test/e2e URLs refused. Removed all demo operational rows (230 reservations, 189 allocations, 158 beds, 34 rooms, 5 dormitories, 110 employees, 180 photos, 80 notifications, etc.) and 361 MinIO objects. The 12 demo user accounts were **isolated, not deleted** (DISABLED, null credential hashes, no roles/sessions) because the append-only audit trigger forbids deleting audit actors; 1,087 audit logs preserved intact.
+- Gated every demo banner/badge/disclaimer in the web app behind `useIsDemoEnv()` (`session.authMode === 'mock'`): layouts, crew home/search/reservations/notifications/help/profile/dormitory, dashboard, employees, inventory, master data, roster. Password/OIDC sessions show zero demo text ("Data operasional", "Login email"/"SSO aktif"). Verified live across a 15-page management sweep: true zeros, honest empty states, no overflow.
+- Separated E2E onto a dedicated `whoosh_stay_e2e` fixture (ports 4001/5175, deterministic seed); integration tests use `whoosh_stay_test`. Neither touches the dev database. Corrected the stale 34-room pagination expectation to the deterministic 30.
+- Fixed KPI horizontal overflow at 320–390 px: shrink-safe `StatCard` and `grid-cols-1 sm:grid-cols-2 xl:grid-cols-4` strips on Housekeeping, Management Reservations, Employees, Maintenance. Responsive-audit E2E green at 320/360/375/390/430/720 for crew and management.
+- Fixed a test timezone bug: `reservations-flow` `isoDate()` now aligns with Asia/Jakarta (the API validates check-in against `todayInJakarta()`); the UTC helper failed between 00:00–07:00 WIB.
+- Verification: typecheck/lint exit 0; env unit 9/9; auth-password integration 8/8; full integration 17 files / 98 tests; full Playwright suite on the isolated fixture; live browser verification of login, dashboard and master data. Data readiness per category documented in `docs/DATA_READINESS.md` (verified: 5 locations + RBAC base; imported: none — no sources; isolated/purged: all demo data; not available: employees/facilities/photos/transactions awaiting legitimate sources; failed: none).
+
+### Master Data, Users & Access, notification centre and sidebar navigation — 2026-11-21
+- Added `/manage/master-data` with category tabs (Akomodasi, Organisasi, Crew, Reserve), secondary tabs per entity, server-side search/status filters, 15/25/50 pagination persisted in the URL, create/edit/deactivate for room types, facilities, buildings, rooms and beds, read-only views for the remaining entities, and a scoped Excel export. Duplicate room-type codes are rejected by the API with an Indonesian conflict message; existing business logic and schema were reused, not duplicated.
+- Rebuilt `/manage/users` as three URL-driven tabs — Pengguna (search, role/dormitory/status filters, pagination, bulk account-status change), Role & Akses (permission inspector per role) and Log Aktivitas (action/entity filters) — all backed by the existing RBAC-guarded endpoints.
+- Added the header notification centre behind the bell (unread filter, mark-all-read, deep links to the related page). There is deliberately no "Notifikasi" item in the sidebar.
+- Redesigned the management sidebar: `#8B1A1A` rail with the WHOOSH STAY lockup, uppercase group headings (Utama, Reservasi, Operasional, Inventaris, Laporan, Pengelolaan Sistem), divider rules and an Akun block at the bottom. "Laporan" is a chevron parent whose children are real `ReportsPage` tabs (`?tab=reservations|occupancy|operational`), so active child state, deep links and browser history reuse the existing router instead of new routes. Parents expose `aria-expanded`/`aria-controls`, children use `aria-current="page"` on an ivory surface with maroon text and a left marker; a parent auto-opens when a child is active.
+- Preserved the three-dot `Ciutkan sidebar`/`Perbesar sidebar` control, persistence and the 76 px rail; collapsed groups open keyboard-dismissable flyouts containing the same submenu children, and the mobile drawer keeps its X. Navigation is derived from the signed-in permissions — items and groups without a permitted child disappear, while direct URLs remain server-guarded.
+- Accessibility/regression fixes: Users filter row wraps at 360/390; the Master Data row action visible label is now "Nonaktifkan" to match its accessible name (axe `label-content-name-mismatch`); sidebar section headings, email and footer text raised to 65–75% white for contrast; Master Data added to the axe and responsive route sweeps.
+- Tests: new `tests/e2e/sidebar-navigation.spec.ts` (7/7) and `tests/e2e/master-data-access.spec.ts` (5/5). Full regression: `typecheck`, `lint`, `build` exit 0; unit 28/28; integration 57/57 (11 files); Playwright 60/60. Measured Core Web Vitals on the production build (Chromium 159 headless, 1440×900, 4× CPU slowdown, loopback): worst LCP 1360 ms, worst CLS 0.092 (reports page), slowest event-timing interaction 24 ms — a local single-user run, not field or 100-VU data.
+
+### Brand identity, fullscreen login and sidebar toggle — 2026-11-21
+- Replaced the logo with an illustrated maroon/gold/ivory mark combining a bed, headboard, curved rail track and speed lines. Added `whoosh-stay-symbol.svg`, `whoosh-stay-logo.svg`, `whoosh-stay-logo-on-dark.svg`, `whoosh-stay-logo.png`, `favicon.svg`, `favicon-32.png`, `apple-touch-icon.png`, `icon-192.png`, `icon-512.png` and `maskable-512.png`; legacy light/dark/compact/login/sidebar filenames mirror the new lockups. `Logo.tsx` now renders the vector symbol inline.
+- Rebuilt the login page as a fullscreen cinematic railway scene (`login-railway-1792.webp` + 1024 px variant, generated demo imagery) with a centred 420 px ivory card: lockup, "Selamat Datang Kembali", username/password fields with show/hide, and a `#8B1A1A` "Masuk" button. The demo-account selector is gone; authentication, session cookies, RBAC, audit logging and OIDC/mock-mode rules are unchanged.
+- Replaced the desktop sidebar X with a persistent three-dot toggle (`Ellipsis`) in both states: 276 px expanded ↔ 76 px collapsed rail, tooltips "Ciutkan sidebar"/"Perbesar sidebar" on hover and keyboard focus, `aria-label`/`aria-expanded`/`aria-controls`, persisted in `localStorage`, submenu flyouts and active indicators retained. The mobile drawer keeps its X.
+- Added tooltip opacity assertions and updated the sidebar E2E spec to the new control names; sidebar suite 4/4 passed.
+- Full regression after the refresh: `typecheck`, `lint` and `build` exit 0; unit 28/28; integration 51/51; Playwright 48/48. Regression fixes found by the full run: crew-home notification timestamps darkened to meet contrast, unread badge no longer truncates to `9+` (accessible-name mismatch), dashboard grid tracks clamped with `minmax(0,…)` at 1024, calendar detail event lists shrink at 360/390, and the crew schedule E2E expectation updated to the redesigned heading "Kalender perjalanan".
+
+### Demo data & final regression — 2026-11-21 (Phases K–M)
+- Read-only consistency checks on the demo database: zero orphan reservations, allocations or beds; no invalid allocation date ranges; 180 gallery photos with no external URLs and one dormitory-level cover per dormitory; no roster rows dated in the past.
+- Seeded roster rows (`SEED_ROSTER`) were displayed as "Sumber: Configured", implying a real integration. The roster summary now treats `SEED*` sources as `MOCK`; integration test added.
+- Polish scan clean: no debug `console.log` in app code, no TODO/FIXME markers, no placeholder copy, no `href="#"` or no-op buttons, no external image URLs.
+- Final regression: `typecheck` exit 0, `lint` exit 0, `build` exit 0 (Vite chunk-size warning informational), unit 28/28, integration 48/48 (10 files), Playwright 43/43 (functional, a11y, RBAC, brand, responsive and responsive-audit).
+
+### Infrastructure — 2026-11-21 (Phases H–J)
+- Added `.github/workflows/ci.yml`: install, shared build, Prisma generate, typecheck, lint, unit tests, Postgres/MinIO bootstrap, integration tests against `whoosh_stay_test`, seeded demo database with `db:verify`, Chromium E2E, production build, failure artifacts and Compose logs. No test is skipped or filtered. Not yet executed on a hosted runner (workspace has no git remote); syntax validated.
+- Added a production-oriented Compose profile (`docker-compose.prod.yml`) with internal-only Postgres/MinIO, one-shot `migrate` gate, API health check, nginx web container, API/web Dockerfiles and `infrastructure/docker/production.env.example` (all secrets placeholders; `production.env` is gitignored). Config validates; no deployment was executed because the official OIDC issuer and TLS edge are unavailable.
+- Added nginx reverse proxy `infrastructure/nginx/whoosh-stay.conf` (SPA fallback, gzip, static caching, security headers, `/api` + `/health` proxying).
+- Added `infrastructure/scripts/pg-backup.sh`, `pg-restore-drill.sh` and `minio-backup.sh`, plus `docs/DEPLOYMENT_RUNBOOK.md`.
+- Executed backup/restore drills against isolated targets: database restored 41/41 tables, 832/832 combined rows, 3/3 migrations, exclusion constraint and append-only audit trigger intact, forbidden audit UPDATE rejected; MinIO backup restored 700 objects / 33 MiB into a temporary bucket. Drill database, temporary bucket and archives were removed; live data untouched.
+- No scheduled backups, PITR, off-site retention, monitoring or shared rate-limit store were implemented.
+
+### Security & accessibility — 2026-11-21 (Phases E–G)
+- Added automated WCAG 2.1 A/AA axe scans (`@axe-core/playwright`) for login, all 11 crew routes, all 17 management routes, and an open reservation modal: 4/4 tests clean (28 route scans + modal).
+- Fixed contrast: `ink-400` / `ink-500` tokens darkened (small text now ≥4.5:1 on `#f3f1ed`, `sand-50` and white); verified across every route by axe.
+- Fixed accessible-name mismatches: crew logo link, calendar day buttons (now use visible text + `sr-only` detail), gallery preview buttons, notifications mark-read label.
+- Fixed missing labels/focusability: `main` landmark on login; `aria-label` on the hidden attachment file input; `tabIndex` on the report table scroll container and settings JSON preview.
+- Verified modal focus trap, Escape close and focus restore with a Playwright keyboard test.
+- Added an Origin allow-list check for unsafe HTTP methods (`POST/PUT/PATCH/DELETE`) as CSRF defense-in-depth; integration test covers blocked and allowed origins.
+- Reviewed auth/session (`HttpOnly`, `Secure` in production, `SameSite=Lax`), OIDC `returnTo` open-redirect guard, attachment magic-byte + MIME checks, CSV formula-injection escaping, and QR hashing/single-use. Residual limits documented (no global rate limiter, CSP disabled on the API, no dedicated CSRF token).
+- Local sequential latency (20 samples/endpoint, single user): p95 ≤ 77 ms for all measured endpoints (health, auth/me, dashboards, reservations, availability, calendar, reports + CSV export, notifications, employees, gallery). Not a 100-VU load test.
+- Unit 28/28, integration 46/46 (10 files), `db:verify` PASS (41 tables).
+
+### Added — 2026-11-21 (Phases C–D: occupancy calendar, stay schedule, XLSX export)
+- Management calendar `/manage/calendar`: month grid and mobile list, dormitory filter, per-day occupancy percentage, arrival/departure counts, day detail with booking status, "Bulan ini"/previous/next navigation; backed by a new scoped `GET /api/v1/calendar` (1–62 day range, SELF denial, out-of-scope dormitory rejection).
+- Crew schedule `/crew/schedule`: monthly stay grouping with upcoming/ongoing stat cards, status badges, allocation summary or "Belum dialokasikan", link to reservation detail; added to crew secondary navigation.
+- XLSX report export: `/api/v1/reports/export?format=xlsx` generates a server-side workbook with bold sticky header (`write-excel-file`); `/manage/reports` now offers separate CSV and XLSX buttons with per-format loading state, and export audit records the format.
+- Removed `exceljs` (vulnerable transitive `uuid`); `write-excel-file` only depends on `fflate`.
+- Integration: calendar invariants (2/2), XLSX content-type/filename/`PK` signature in the operations suite (7/7); browser download check plus 1280/390 visual review.
+- `docs/DECISIONS.md` D-038 superseded by D-039.
+
+### Changed — 2026-11-21 (Full-app UI/UX redesign)
+- Redesigned every crew and management route without changing API contracts, database schema, reservation lifecycle, or RBAC; tracked per route in `docs/UI_UX_REDESIGN.md` (all 34 routes VERIFIED).
+- Management reservations replaced the clipped wide table with stacked rows (booking code, status, dormitory/source, guests, allocation) so Detail/Approve/Reject/Allocate remain visible at 1280; approval reason is no longer hidden.
+- Localised raw enum labels across dashboard, availability, inventory, housekeeping, maintenance, roster, reports, notifications, employees, users, audit, and settings (e.g. `PENDING`/`IN_PROGRESS`, `CANCELLED + REJECTED`, `MOCK`/`DISABLED`, `ADMIN_APPROVAL`, `AUTH_LOGIN`, `READY`, `PRIMARY` → `Utama`).
+- Accessibility/layout fixes: dashboard availability bed chips use `StatusBadge`; duplicate floor headings removed; permission chips wrap instead of scrolling; truncated emails/request IDs expose full values via tooltips; profile/dashboard grids no longer stretch short cards.
+- Crew: premium login hero with local photo asset and demo selector; QR check-in empty state links back to reservations; mobile mark-read control becomes icon-only; help cards and check-out guidance link only to real routes.
+- Management calendar and report exports shipped in the Phases C–D entry above; automated a11y scans were later added in Phases E–G (manual keyboard walkthrough still outstanding).
+
+### Added — 2026-11-21 (Accommodation photo gallery)
+- Per-dormitory cover photos and interior photos per room type, with listing/detail galleries, lightbox, management upload/preview/cover/reorder/delete, synthetic demo photos, WebP conversion, thumbnails, and lazy loading.
+- Gallery is database-backed (`/api/v1/accommodation/gallery`) and guarded by `photos.manage`; no external image hotlinks.
+
+### Verified — UI/UX redesign
+- `npm run -w @whoosh/web typecheck` exit 0.
+- Functional Playwright suite (auth, brand, crew, gallery, management, RBAC, responsive) 27/27 passed.
+- Responsive overflow audit (`tests/e2e/responsive-audit.spec.ts`) loaded 10 crew + 16 management routes at 360/390/768/1024/1280/1440 with zero unfixed viewport offenders (12/12 passed).
+- Visual review of full-page screenshots at 1280 for every route plus 390 captures for dashboard, availability, gallery, reservations, inventory, reports, users, settings, housekeeping, all crew routes, forbidden, 404, and `/`.
+
+### Added — 2026-11-21 (Roadmap Phases 2–7 execution)
+- Inventory: dormitory/building/floor/room/bed APIs and management UI, status changes and inventory blocks; seed expanded to 5 DEMO dormitories, 30 rooms, 150 beds.
+- Availability engine: per-night `[check_in, check_out)` availability from real allocations and blocks, optional readiness window from system settings (D-008 pending, default 0), grouped results for crew and management.
+- Reservations: creation with idempotency key, approval/rejection/cancellation, ownership checks, transactional bed allocation, PostgreSQL exclusion backstop, `23P01` → `409 BED_ALLOCATION_CONFLICT`.
+- Stay operations: QR issuance (32-byte token, SHA-256 storage, single active token per occupant), validation, check-in, active-stay listing, check-out with bed/room dirtying and automatic housekeeping task; manual stay lookup.
+- Housekeeping: task creation, checklist completion, start/complete/verify with separate permissions.
+- Maintenance: tickets, inventory blocking, lifecycle transitions; resolving/closing releases blocks (future blocks deleted, ongoing blocks clamped) without auto-marking rooms ready.
+- Roster: deterministic `MOCK_ROSTER` provider, preview, idempotent sync by `(sourceSystem, externalRosterId)`, run history and assignments UI (never mutates confirmed reservations).
+- Notifications: in-app notifications, read/read-all, provider abstraction with logged MOCK delivery records for email/Telegram; admin-only delivery log UI.
+- Reports: reservation, occupancy and operational reports with scope enforcement, SELF-scope denial and CSV export.
+- Settings: runtime settings and approval policies UI/API; D-008 surfaced as a pending decision; integration flags shown as MOCK.
+- Crew portal: home, search, dormitory detail, booking, reservations/detail/cancel, history, check-in QR, check-out info, notifications, profile, help; desktop secondary navigation.
+- Management portal: grouped sidebar (Ringkasan, Reservasi, Operasional, Inventaris, Laporan, Administrasi) with permission-filtered navigation; all items are real pages.
+- `#8B1A1A` sidebar colour enforced and asserted by E2E computed-style check.
+- Tests: integration suite expanded to 34 tests (lifecycle, idempotency, concurrency, QR, housekeeping/maintenance, roster, reports, settings, notifications); Playwright expanded to 22 tests (crew flows, management crawl, RBAC, responsive 360/768/1024/1440).
+
+### Fixed
+- Maintenance resolution 500 when releasing a future-dated block (check-constraint violation) — future blocks are deleted, current blocks clamped to `now`.
+- SELF-scope report data leak through `/api/v1/reports/*` — reports now reject self-only principals.
+- Report CSV export 500 caused by non-UUID `entityId` in the audit log.
+- Roster preview/sync 500 from querying a non-existent employee `status` field.
+- Crew secondary links unreachable on desktop; header overflow at 768/1024 px.
+
+### Verified
+- `npm run typecheck`, `npm run lint`, `npm run build` exit 0.
+- Unit 28/28, integration 34/34, Playwright 22/22 passed.
+- `prisma migrate status` up to date; `npm run db:verify` all checks passed.
+
+### Notes
+- External integrations remain mock/disabled; PDF export, the remaining SRS report families, performance baseline, backup drill, production profile and full a11y audit are not implemented or not verified (see `IMPLEMENTATION_STATUS.md` §5).
+- No real KCIC credentials or employee data were introduced; demo/mock labels remain visible.
+
+### Added — 2026-11-21 (Roadmap Phase 1 — Foundation, Gate A passed)
+- Scaffolded npm workspaces: `apps/api`, `apps/web`, `packages/shared`, strict TypeScript, ESLint, Prettier, Git repository.
+- Added validated environment configuration with production fail-fast guards (mock auth, OIDC requirements, session secret, integration flags).
+- Added Docker Compose for PostgreSQL 16 (host 5433) and MinIO (host 9100/9101) with health checks, private bucket initialization and named volumes.
+- Added Prisma schema with 40 base tables, raw SQL migrations, `btree_gist` bed-allocation exclusion constraint (`bed_allocations_no_overlap`), partial unique indexes, and an audit-log append-only trigger.
+- Added idempotent seed: 8 roles, 56 permissions, 191 role-permission grants, 10 demo users, 10 synthetic employees, demo dormitory/rooms/beds.
+- Added Express 5 API platform: response envelopes, typed error catalog, request IDs, pino redaction, helmet, rate limiting, Zod validation, pagination helper, health endpoints and OpenAPI 3.1 document.
+- Added authentication foundations: `IdentityProvider` adapter, development mock login, OIDC Authorization Code + PKCE with state/nonce protection, opaque HttpOnly session cookie backed by `sessions`, logout, `/auth/me`, `/auth/config`, `/auth/permissions`.
+- Added server-side RBAC: deny-by-default `requirePermission`, scope resolution (`GLOBAL/DORMITORY/BUILDING/ASSIGNED_TASK/SELF`), admin users/roles/permissions/scope-options endpoints, role-assignment validation, self-role-change and last-admin guards.
+- Added employee mirror read endpoints and an idempotent mock sync with run history; live provider flags remain disabled.
+- Added audit read endpoint and critical-action audit writes.
+- Added dashboard overview API with scope-aware counters and integration status.
+- Added React/Vite/Tailwind web app: design tokens and UI primitives, login (demo + SSO), crew portal (home/profile/help), management portal (dashboard/employees/users/audit), permission-aware navigation, route guards, forbidden/not-found states.
+- Added automated tests: Vitest unit (4 files, 28 tests), Supertest/PostgreSQL integration (5 files, 22 tests), Playwright E2E (9 tests), plus `db:verify` assertions for constraints, triggers, indexes, migrations and seed.
+- Added `.env.example`, `.env.test`, `db:migrate`, `db:seed`, `db:verify`, `employees:sync`, and test scripts.
+- Updated `IMPLEMENTATION_STATUS.md`, `docs/DECISIONS.md` (D-025…D-033) and `docs/REQUIREMENT_TRACEABILITY.md` to reflect Phase 1.
+
+### Verified — Gate A
+- `npm run typecheck` exit 0; `npm run lint` exit 0; `npm run build` exit 0 (shared, API, web/Vite).
+- Unit 28/28 passed; integration 22/22 passed; Playwright 9/9 passed.
+- Clean-database migration + seed + verification passed; live database reports 2 migrations up to date.
+- Docker Compose services healthy; API `/health/live` 200 on 4000; web 200 on 5174; MinIO health 200.
+
+### Notes
+- Roadmap Phase 2 was not started; Gate A stop was respected.
+- External KCIC integrations remain mock/disabled until official contracts and credentials exist; no values were invented.
+- The official `minio/minio` image was unavailable locally; `bitnamilegacy/minio:latest` is used for development only.
+
+### Added — 2026-11-21 (Discovery / Roadmap Phase 0)
+- Read and reconciled all 14 project documents plus `PACKAGE_MANIFEST.json`.
+- Added `PROJECT_ANALYSIS.md`: product understanding, stack, architecture, data/API/RBAC review, module boundaries, mock matrix, findings and resolutions.
+- Added `IMPLEMENTATION_PLAN.md`: phased plan (Roadmap Phases 1–7), Phase 1 task breakdown, gates, testing and verification commands.
+- Added `TECHNICAL_RISKS.md`: risk register, top-5 required proofs, external dependencies, assumptions.
+- Added `IMPLEMENTATION_STATUS.md`: phase/module status, actual environment verification, blockers, next action.
+- Added `docs/DECISIONS.md` (D-001…D-024), `docs/REQUIREMENT_TRACEABILITY.md`, and this changelog.

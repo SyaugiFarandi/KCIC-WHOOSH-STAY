@@ -1,0 +1,370 @@
+{
+  "locationCode": "PADALARANG",
+  "locationName": "Stasiun Whoosh Padalarang",
+  "researchedAt": "2026-11-22",
+  "stationContext": "Stasiun Padalarang is a Whoosh high-speed rail station in Kertajaya, Padalarang, Kabupaten Bandung Barat, Jawa Barat, serving as the interchange hub toward central Bandung via the KA Feeder (reported as 7 feeder trips per day by Kompas). Most nearby hotels and homestays cluster in the Kota Baru Parahyangan (KBP) township and the G-Land Padalarang Residence area a few kilometres from the station.",
+  "properties": [
+    {
+      "name": "Hilton Padalarang Bandung",
+      "address": "Jalan Panyawangan Kavling 6 Block C No. 8, Kota Baru Parahyangan, Kertajaya, Padalarang, West Bandung Regency, West Java, 40553, Indonesia",
+      "latitude": null,
+      "longitude": null,
+      "distanceKm": 3.7,
+      "propertyType": "HOTEL",
+      "classification": "VERIFIED_PUBLIC",
+      "facilities": [
+        "Outdoor swimming pool",
+        "Children's pool",
+        "Sauna (free)",
+        "Spa",
+        "Massage room",
+        "Gym (free)",
+        "Executive lounge",
+        "4 restaurants",
+        "Cafe",
+        "Bar",
+        "Wi-Fi in public areas",
+        "Private parking",
+        "Valet parking (charge)",
+        "EV charging station",
+        "Luggage storage",
+        "Airport pick-up/drop-off (additional charge)",
+        "Station pick-up (free)",
+        "Conference room",
+        "Multi-function room",
+        "Playground",
+        "Kids' club",
+        "Taxi booking service",
+        "Car rentals",
+        "Wake-up call"
+      ],
+      "website": "https://www.hilton.com/en/hotels/bdopahi-hilton-padalarang-bandung/",
+      "contactName": null,
+      "contactPhone": null,
+      "notes": "Public international-brand hotel in Kota Baru Parahyangan, Kertajaya (same kelurahan as the station). Address confirmed by Hilton's own site (seen in search results; direct fetch returned HTTP 403) and independently by Trip.com's structured data for the same property. distanceKm 3.7 is the figure explicitly stated by detikJabar (19 Oct 2026), not map-measured. Trip.com lists a free station pick-up service and check-in 15:00-24:00 / check-out 12:00. detikJabar quotes indicative public rates of Rp1.2-1.3 million/night; these are published consumer rates, not crew/contract rates. No source states room count, capacity, occupancy or any KCIC relationship; classified VERIFIED_PUBLIC, not KCIC-official.",
+      "sources": [
+        {
+          "url": "https://us.trip.com/hotels/padalarang-hotel-detail-116781270/hilton-padalarang-bandung/",
+          "title": "Hilton Padalarang Bandung - Trip.com hotel detail",
+          "sourceType": "OTHER",
+          "checkedAt": "2026-11-22",
+          "photoUrl": null,
+          "photoRights": null,
+          "photoTakenAt": null,
+          "notes": "OTA listing fetched in full. Embedded schema.org JSON-LD gives streetAddress 'Jalan Panyawangan Kavling 6 Block C No. 8, Kota Baru Parahyangan, Kertajaya, Padalarang, West Bandung Regency, West Java, 40553, Indonesia'. Services & amenities section explicitly lists outdoor pool, children's pool, free sauna, spa, massage room, free gym, executive lounge, 4 restaurants, cafe, bar, Wi-Fi in public areas, private parking, valet parking (charge), EV charging, luggage storage, airport pick-up/drop-off (additional charge), free station pick-up, conference room, multi-function room, playground, kids' club, taxi booking, car rentals, wake-up call. FAQ confirms restaurant, pool, airport transfer, no pets, check-in 15:00-24:00, check-out 12:00."
+        },
+        {
+          "url": "https://www.hilton.com/en/hotels/bdopahi-hilton-padalarang-bandung/",
+          "title": "Hilton Padalarang Bandung - official hotel page",
+          "sourceType": "OFFICIAL_PROPERTY",
+          "checkedAt": "2026-11-22",
+          "photoUrl": null,
+          "photoRights": null,
+          "photoTakenAt": null,
+          "notes": "Official Hilton page seen in search results with address 'Jalan Panyawangan Kavling 6 Block C No. 8 Kota Baru Parahyangan, Padalarang, 40553'. Direct fetch returned HTTP 403 (bot protection), so only the search-surfaced address is used; it matches Trip.com's structured data exactly."
+        },
+        {
+          "url": "https://www.detik.com/jabar/wisata/d-8712574/6-rekomendasi-penginapan-nyaman-dekat-stasiun-whoosh-padalarang",
+          "title": "6 Rekomendasi Penginapan Nyaman dekat Stasiun Whoosh Padalarang (detikJabar, 19 Oct 2026)",
+          "sourceType": "PUBLIC_ARTICLE",
+          "checkedAt": "2026-11-22",
+          "photoUrl": null,
+          "photoRights": null,
+          "photoTakenAt": null,
+          "notes": "Fetched in full. States Hilton Padalarang Bandung is in Kota Baru Parahyangan, about 3.7 km from Stasiun Whoosh Padalarang, with outdoor pool, spa, sauna, 24-hour fitness center, 4 restaurants, 3 bars/lounges, cafe and meeting rooms; indicative rate Rp1.2-1.3 million/night. Sole source of the 3.7 km distance."
+        }
+      ]
+    },
+    {
+      "name": "Mason Pine Hotel Bandung",
+      "address": "Jalan Raya Parahyangan KM. 1.8, Kota Baru Parahyangan, Bandung 40553, Indonesia",
+      "latitude": null,
+      "longitude": null,
+      "distanceKm": 4,
+      "propertyType": "HOTEL",
+      "classification": "VERIFIED_PUBLIC",
+      "facilities": [
+        "4 restaurants",
+        "Golf course",
+        "Outdoor swimming pool",
+        "Sauna",
+        "Spa",
+        "Gym",
+        "Garden",
+        "Station shuttle (surcharge)"
+      ],
+      "website": "https://www.masonpinehotel.com/en",
+      "contactName": null,
+      "contactPhone": "+62 22 680 3779",
+      "notes": "Public resort hotel in Kota Baru Parahyangan. Address, phones (+62 22 680 3779 / 3778, mobile +62 852 2229 2229) and email reservation@masonpinehotel.com confirmed on the hotel's own official website (fetched). Facilities listed here are those explicitly stated by detikJabar (golf, pool, sauna, spa, gym, garden, 4 restaurants, station shuttle with surcharge); the official site's facility markup could not be reliably parsed, so nothing was inferred from it. distanceKm 4 is detikJabar's stated 'about 4 km'; Kompas separately states about 7 minutes by ojek from the station. detikJabar quotes indicative public rates Rp1.6-3.4 million/night. No room count, capacity or KCIC relationship stated by any source.",
+      "sources": [
+        {
+          "url": "https://www.masonpinehotel.com/en",
+          "title": "Mason Pine Hotel Bandung - official website",
+          "sourceType": "OFFICIAL_PROPERTY",
+          "checkedAt": "2026-11-22",
+          "photoUrl": null,
+          "photoRights": null,
+          "photoTakenAt": null,
+          "notes": "Official site fetched. Confirms address 'Jalan Raya Parahyangan KM. 1.8 Kota Baru Parahyangan, Bandung 40553, Indonesia', email reservation@masonpinehotel.com, phones +62 22 680 3779, +62 22 680 3778, +62 852 2229 2229."
+        },
+        {
+          "url": "https://www.detik.com/jabar/wisata/d-8712574/6-rekomendasi-penginapan-nyaman-dekat-stasiun-whoosh-padalarang",
+          "title": "6 Rekomendasi Penginapan Nyaman dekat Stasiun Whoosh Padalarang (detikJabar, 19 Oct 2026)",
+          "sourceType": "PUBLIC_ARTICLE",
+          "checkedAt": "2026-11-22",
+          "photoUrl": null,
+          "photoRights": null,
+          "photoTakenAt": null,
+          "notes": "Fetched in full. States Mason Pine Hotel Bandung is in Kota Baru Parahyangan, about 4 km from the station, with 4 restaurants, golf course, outdoor pool, sauna, spa, gym, garden and a station shuttle (surcharge); indicative rate Rp1.6-3.4 million/night. Sole source of the 4 km distance and of the facility list used here."
+        },
+        {
+          "url": "https://travel.kompas.com/read/2024/04/04/150300827/5-hotel-dekat-stasiun-whoosh-padalarang-lebih-cepat-naik-ojek-online",
+          "title": "5 Hotel Dekat Stasiun Whoosh Padalarang, Lebih Cepat Naik Ojek Online (Kompas, 4 Apr 2024)",
+          "sourceType": "PUBLIC_ARTICLE",
+          "checkedAt": "2026-11-22",
+          "photoUrl": null,
+          "photoRights": null,
+          "photoTakenAt": null,
+          "notes": "Fetched (page 1). Confirms station location in Kertajaya, Padalarang, Kabupaten Bandung Barat and KA Feeder 7x/day; lists Mason Pine at 'Jalan Raya Parahyangan kilometer 1,8 Kota Baru Parahyangan', about 7 minutes by ojek from Stasiun Whoosh Padalarang."
+        }
+      ]
+    },
+    {
+      "name": "Hotel Neo Kota Baru Parahyangan",
+      "address": "Jl. Panyawangan Kavling 3-C No F0-01, Kota Baru Parahyangan, Padalarang, Kabupaten Bandung Barat, Jawa Barat",
+      "latitude": null,
+      "longitude": null,
+      "distanceKm": 2.64,
+      "propertyType": "HOTEL",
+      "classification": "VERIFIED_PUBLIC",
+      "facilities": [
+        "Restaurant (all-day dining)",
+        "Coffee shop",
+        "Mushola (prayer room)",
+        "Lactation room",
+        "Meeting rooms",
+        "Ballroom",
+        "24-hour security",
+        "24-hour room service",
+        "Airport shuttle service",
+        "Free buffet breakfast",
+        "Bar",
+        "Wi-Fi",
+        "Free valet parking",
+        "24-hour reception",
+        "Luggage storage"
+      ],
+      "website": "https://www.neohotels.com/id/hotel/view/20/hotel-neo-kota-baru-parahyangan",
+      "contactName": null,
+      "contactPhone": "+62 222 100 0199",
+      "notes": "Public 3-star hotel (Archipelago/NEO chain) in Kota Baru Parahyangan. Official brand page (fetched) states the address, phone '+62 222 100 0199' (as printed), email parahyanganinfo@neohotels.com, WhatsApp +62 812 2020 9992, and 116 rooms across Superior, Deluxe and Suites types - the only operator-published room count found for any Padalarang property. Official facility/service lists: Restoran, Mushola, Ruang Laktasi, Coffee Shop; Keamanan 24 Jam, Antar-Jemput Bandara, Layanan Kamar 24 Jam; pets not allowed. Breakfast, bar, Wi-Fi, free valet parking, 24-hour reception and luggage storage are additionally stated by detikJabar, which also gives the 2.64 km distance to the station and indicative public rates Rp560 thousand-1 million/night. No capacity-for-crew, contract-rate or KCIC relationship stated anywhere.",
+      "sources": [
+        {
+          "url": "https://www.neohotels.com/id/hotel/view/20/hotel-neo-kota-baru-parahyangan",
+          "title": "Hotel Neo Kota Baru Parahyangan - official NEO Hotels page",
+          "sourceType": "OFFICIAL_PROPERTY",
+          "checkedAt": "2026-11-22",
+          "photoUrl": null,
+          "photoRights": null,
+          "photoTakenAt": null,
+          "notes": "Official page fetched. Confirms address 'Jl. Panyawangan Kavling 3-C No F0-01, Kota Baru Parahyangan, Padalarang, Kabupaten Bandung Barat - Jawa Barat', phone +62 222 100 0199, email parahyanganinfo@neohotels.com, WA +62 812 2020 9992, '116 kamar' (Superior, Deluxe, Suites), meeting room, ballroom, all-day-dining restaurant, Fasilitas (Restoran, Mushola, Ruang Laktasi, Coffee Shop) and Layanan (Keamanan 24 Jam, Antar-Jemput Bandara, Layanan Kamar 24 Jam, hewan peliharaan dilarang)."
+        },
+        {
+          "url": "https://www.detik.com/jabar/wisata/d-8712574/6-rekomendasi-penginapan-nyaman-dekat-stasiun-whoosh-padalarang",
+          "title": "6 Rekomendasi Penginapan Nyaman dekat Stasiun Whoosh Padalarang (detikJabar, 19 Oct 2026)",
+          "sourceType": "PUBLIC_ARTICLE",
+          "checkedAt": "2026-11-22",
+          "photoUrl": null,
+          "photoRights": null,
+          "photoTakenAt": null,
+          "notes": "Fetched in full. Describes Hotel Neo Kota Baru Parahyangan as a 3-star hotel about 2.64 km from the station with free buffet breakfast, restaurant, bar, cafe, Wi-Fi, free valet parking, 24-hour reception, luggage storage and meeting rooms; indicative rate Rp560 thousand-1 million/night. Sole source of the 2.64 km distance."
+        }
+      ]
+    },
+    {
+      "name": "Danapati Homestay Padalarang",
+      "address": "Dortmund B1, Kertajaya, Kec. Padalarang, Kabupaten Bandung Barat, Jawa Barat 40553",
+      "latitude": null,
+      "longitude": null,
+      "distanceKm": null,
+      "propertyType": "HOMESTAY",
+      "classification": "VERIFIED_PUBLIC",
+      "facilities": [
+        "Kitchen",
+        "Laundry",
+        "Air conditioning",
+        "Television",
+        "Parking",
+        "Wi-Fi"
+      ],
+      "website": null,
+      "contactName": null,
+      "contactPhone": "+62 878 6723 1820",
+      "notes": "Homestay in the Dortmund cluster of Kota Baru Parahyangan, Kertajaya (same kelurahan as the station), marketed near Wahoo Waterworld and IKEA KBP. Address 'Dortmund B1, Bandung, Padalarang, Indonesia' confirmed in Skyscanner's structured data (fetched); the property's own Instagram post (seen in search results) gives the fuller address 'Dortmund B1, Kertajaya, Kec. Padalarang, Bandung, Jawa Barat 40553' and WhatsApp 087867231820. Skyscanner states check-in 14:00 / check-out 12:00 and '1.0 km from Padalarang town center' - that is a town-center distance, NOT a station distance, so distanceKm is left null. detikJabar quotes indicative public rates Rp650 thousand weekday / Rp750 thousand weekend. No room count, capacity or KCIC relationship stated.",
+      "sources": [
+        {
+          "url": "https://www.skyscanner.com.my/my/ms-my/myr/hotels/indonesia/padalarang-hotel/danapati-homestay/ht-227937314",
+          "title": "Danapati Homestay, Padalarang - Skyscanner listing",
+          "sourceType": "OTHER",
+          "checkedAt": "2026-11-22",
+          "photoUrl": null,
+          "photoRights": null,
+          "photoTakenAt": null,
+          "notes": "OTA listing fetched. schema.org JSON-LD streetAddress 'Dortmund B1, Bandung, Padalarang, Indonesia'; amenityFeature lists Kitchen, Laundry, Air conditioning, Television, Parking, Wi-Fi; check-in 14:00, check-out 12:00; FAQ states 1.0 km from Padalarang town center (not used as station distance)."
+        },
+        {
+          "url": "https://www.instagram.com/p/DdLl3zNzihJ/",
+          "title": "Danapati Homestay - official Instagram post",
+          "sourceType": "OFFICIAL_PROPERTY",
+          "checkedAt": "2026-11-22",
+          "photoUrl": null,
+          "photoRights": null,
+          "photoTakenAt": null,
+          "notes": "Property's own Instagram post seen in search results (not fetched; Instagram requires login). Snippet states address 'Dortmund B1, Kertajaya, Kec. Padalarang, Bandung, Jawa Barat 40553' and WA 087867231820, consistent with the Skyscanner address."
+        },
+        {
+          "url": "https://www.detik.com/jabar/wisata/d-8712574/6-rekomendasi-penginapan-nyaman-dekat-stasiun-whoosh-padalarang",
+          "title": "6 Rekomendasi Penginapan Nyaman dekat Stasiun Whoosh Padalarang (detikJabar, 19 Oct 2026)",
+          "sourceType": "PUBLIC_ARTICLE",
+          "checkedAt": "2026-11-22",
+          "photoUrl": null,
+          "photoRights": null,
+          "photoTakenAt": null,
+          "notes": "Fetched in full. Lists Danapati Homestay Padalarang among lodgings near Stasiun Whoosh Padalarang, near Wahoo Waterworld and IKEA KBP; indicative rates Rp650 thousand weekday / Rp750 thousand weekend. No station distance stated."
+        }
+      ]
+    },
+    {
+      "name": "Alayam Villa Padalarang (Near Whoosh, Wahoo Waterworld & IKEA)",
+      "address": "Jl. G-Land Padalarang Residence No. 10, Jayamekar, Kec. Padalarang, Kabupaten Bandung Barat, Jawa Barat",
+      "latitude": null,
+      "longitude": null,
+      "distanceKm": null,
+      "propertyType": "OTHER",
+      "classification": "VERIFIED_PUBLIC",
+      "facilities": [],
+      "website": null,
+      "contactName": null,
+      "contactPhone": "+62 851 2650 7382",
+      "notes": "Villa-format lodging (propertyType OTHER) in G-Land Padalarang Residence, Jayamekar, explicitly marketed as 'Near Whoosh, Wahoo Waterworld & IKEA'. Existence and address are corroborated by three independent sources seen in search results: the property's own Instagram ('Jl. G-Land Padalarang Residence No.10, Jayamekar, Kec. Padalarang, Kabupaten Bandung Barat', WA 0851-2650-7382 / 08218520068), Booking.com ('Jalan G-Land Padalarang Residence, Padalarang') and tiket.com (plus code '5F2C+HP9, Jl. G-Land Padalarang Residence'); detikJabar (fetched) also lists it. Direct fetches of the Booking/tiket/MakeMyTrip listing pages were bot-blocked or timed out, so evidence is search-surfaced snippets plus the fetched news article - address is consistent across all of them, hence VERIFIED_PUBLIC, but a first-party page should still be re-verified before operational use. The plus code is not decoded into coordinates (no source publishes lat/long). No facility list was explicitly captured, so facilities is empty. detikJabar gives an indicative rate around Rp650 thousand/night. No capacity or KCIC relationship stated.",
+      "sources": [
+        {
+          "url": "https://www.instagram.com/p/De6TN3wPiVh/",
+          "title": "Alayam Villa Padalarang - official Instagram post",
+          "sourceType": "OFFICIAL_PROPERTY",
+          "checkedAt": "2026-11-22",
+          "photoUrl": null,
+          "photoRights": null,
+          "photoTakenAt": null,
+          "notes": "Property's own Instagram post seen in search results (not fetched; login wall). Snippet states 'Jl. G-Land Padalarang Residence No.10, Jayamekar, Kec. Padalarang, Kabupaten Bandung Barat' and WA 0851-2650-7382 / 08218520068. A second post (instagram.com/p/DeSS5gdTnDd/) shows the same address."
+        },
+        {
+          "url": "https://www.booking.com/hotel/id/alayam-villa-padalarang.id.html",
+          "title": "Alayam Villa Padalarang Near Whoosh, Wahoo Waterworld & IKEA - Booking.com",
+          "sourceType": "OTHER",
+          "checkedAt": "2026-11-22",
+          "photoUrl": null,
+          "photoRights": null,
+          "photoTakenAt": null,
+          "notes": "OTA listing seen in search results with address 'Jalan G-Land Padalarang Residence, Padalarang'. Direct fetch blocked by AWS WAF JavaScript challenge; snippet used only for name/address corroboration."
+        },
+        {
+          "url": "https://www.tiket.com/id-id/homes/indonesia/alayam-villa-padalarang-near-whoosh-wahoo-waterworld-ikea-904001776954409369",
+          "title": "Alayam Villa Padalarang Near Whoosh, Wahoo Waterworld & IKEA - tiket.com",
+          "sourceType": "OTHER",
+          "checkedAt": "2026-11-22",
+          "photoUrl": null,
+          "photoRights": null,
+          "photoTakenAt": null,
+          "notes": "OTA listing seen in search results with location '5F2C+HP9, Jl. G-Land Padalarang Residence'. Direct fetch of tiket.com returned HTTP 403; snippet used only for address corroboration. Plus code not converted to coordinates."
+        },
+        {
+          "url": "https://www.detik.com/jabar/wisata/d-8712574/6-rekomendasi-penginapan-nyaman-dekat-stasiun-whoosh-padalarang",
+          "title": "6 Rekomendasi Penginapan Nyaman dekat Stasiun Whoosh Padalarang (detikJabar, 19 Oct 2026)",
+          "sourceType": "PUBLIC_ARTICLE",
+          "checkedAt": "2026-11-22",
+          "photoUrl": null,
+          "photoRights": null,
+          "photoTakenAt": null,
+          "notes": "Fetched in full. Lists 'Alayam Villa Padalarang Near Whoosh, Wahoo Waterworld & IKEA' as a villa-format option near the station with indicative rate around Rp650 thousand/night. No station distance or facility list stated."
+        }
+      ]
+    },
+    {
+      "name": "Hamish Home Padalarang",
+      "address": "G-Land Padalarang Residence Blok C-12A, Padalarang, Kabupaten Bandung Barat, Jawa Barat (as listed: 'Gland Padalarang Residence blok c-12a')",
+      "latitude": null,
+      "longitude": null,
+      "distanceKm": null,
+      "propertyType": "HOMESTAY",
+      "classification": "VERIFIED_PUBLIC",
+      "facilities": [],
+      "website": null,
+      "contactName": null,
+      "contactPhone": null,
+      "notes": "Budget homestay in the same G-Land Padalarang Residence complex as Alayam Villa (Jayamekar, Padalarang). Name, type (homestay), budget positioning and street address 'Gland Padalarang Residence blok c-12a' were read on Booking.com's fetched Padalarang homestay city page (guest rating 9.0 from 1 review); the individual listing page (booking.com/hotel/id/hamish-home.id.html) was not fetched because Booking hotel pages are bot-blocked. No facilities, room count, distance to the station, phone or KCIC relationship are stated by the fetched page, so those fields are null/empty. A low-cost candidate worth direct contact for crew blocks.",
+      "sources": [
+        {
+          "url": "https://www.booking.com/homestay/city/id/padalarang.id.html",
+          "title": "10 homestay terbaik di Padalarang, Indonesia - Booking.com city page",
+          "sourceType": "OTHER",
+          "checkedAt": "2026-11-22",
+          "photoUrl": null,
+          "photoRights": null,
+          "photoTakenAt": null,
+          "notes": "City landing page fetched in full. Lists 'Hamish Home Padalarang - Homestay di Padalarang' with address 'Gland Padalarang Residence blok c-12a', tagged 'Banyak pilihan budget', guest rating 9.0 (1 review), linking to booking.com/hotel/id/hamish-home.id.html. No facilities or station distance given."
+        }
+      ]
+    },
+    {
+      "name": "Chateau Lumiere KBP",
+      "address": "Kota Baru Parahyangan, Tatar Punawangi, Jl. Punawangi No. 7, Padalarang, Kabupaten Bandung Barat, Jawa Barat",
+      "latitude": null,
+      "longitude": null,
+      "distanceKm": null,
+      "propertyType": "HOMESTAY",
+      "classification": "VERIFIED_PUBLIC",
+      "facilities": [],
+      "website": null,
+      "contactName": null,
+      "contactPhone": null,
+      "notes": "Budget homestay inside Kota Baru Parahyangan (Tatar Punawangi cluster), the township where most near-station lodging is concentrated. Name, type (homestay), budget positioning and address 'Kota Baru Parahyangan tatar Punawangi, Jl. Punawangi no.7' were read on Booking.com's fetched Padalarang homestay city page; the individual listing (booking.com/hotel/id/chateau-lumiere-kbp.id.html) was not fetched (bot-blocked). No facilities, room count, station distance, phone or KCIC relationship stated, so those fields are null/empty. Low-cost candidate for crew accommodation pending direct verification.",
+      "sources": [
+        {
+          "url": "https://www.booking.com/homestay/city/id/padalarang.id.html",
+          "title": "10 homestay terbaik di Padalarang, Indonesia - Booking.com city page",
+          "sourceType": "OTHER",
+          "checkedAt": "2026-11-22",
+          "photoUrl": null,
+          "photoRights": null,
+          "photoTakenAt": null,
+          "notes": "City landing page fetched in full. Lists 'Chateau Lumiere KBP - Homestay di Padalarang' with address 'Kota Baru Parahyangan tatar Punawangi, Jl. Punawangi no.7', tagged 'Banyak pilihan budget', linking to booking.com/hotel/id/chateau-lumiere-kbp.id.html. No facilities or station distance given."
+        }
+      ]
+    }
+  ],
+  "missingInfo": [
+    "No official KCIC source (kcic.co.id, official press release, or official Whoosh site) was found stating that KCIC operates, owns or contracts any crew accommodation at or near Stasiun Whoosh Padalarang; a domain-restricted search of kcic.co.id returned no results. Therefore no property is classified VERIFIED_OFFICIAL_KCIC.",
+    "The Gaia Hotel Bandung opened a 'Gaia Lounge' at KCIC Padalarang (Jakarta Post advertorial, 3 Feb 2026, thejakartapost.com/adv/2026/02/03/the-gaia-hotel-bandung-opens-gaia-lounge-at-kcic-padalarang) - this is a passenger lounge service inside the station, not evidence of KCIC crew housing; whether it involves any KCIC crew arrangement is unknown.",
+    "Whether KCIC contracts rooms/blocks at any of the listed KBP hotels (Hilton, Mason Pine, Neo) or nearby homestays for train crews, and any contract rates, allocations or occupancy.",
+    "Coordinates for every property: no source fetched publishes latitude/longitude (Alayam's tiket.com plus code '5F2C+HP9' was not decoded, per the no-guessing rule).",
+    "Authoritative distances to Stasiun Whoosh Padalarang: only detikJabar states distances (Hilton 3.7 km, Mason Pine ~4 km, Neo 2.64 km); none are map-verified, and no distance is published for Danapati, Alayam, Hamish Home or Chateau Lumiere.",
+    "Room counts, bed counts, building/floor counts and crew-block capacity for all properties except Hotel Neo Kota Baru Parahyangan (official site states 116 rooms).",
+    "Facilities for Alayam Villa, Hamish Home and Chateau Lumiere: no explicit amenity list was captured from a fetched page.",
+    "Contact phones for Hilton Padalarang Bandung, Hamish Home and Chateau Lumiere; contact names for all properties.",
+    "First-party websites for Danapati Homestay, Alayam Villa, Hamish Home and Chateau Lumiere (Instagram/OTA presence only). Hilton.com, Booking.com hotel pages, tiket.com and MakeMyTrip returned HTTP 403/bot challenges or timeouts, so some address evidence is search-surfaced snippets rather than fetched pages (noted per source).",
+    "A verified budget hotel/guesthouse immediately adjacent to the station itself: RedDoorz properties surfaced by search were either generic network promos without a specific address or far away (e.g. RedDoorz Plus near Parahyangan University is stated as 21.1 km from the station on tiket.com); Larisa Homestay Syariah has conflicting addresses across OTAs and was excluded.",
+    "Legitimately usable photographs: no image URL with clear usage rights was identified, so all photoUrl fields are null."
+  ],
+  "kcicDataRequests": [
+    "Does KCIC operate or contract any crew accommodation (mess, rumah dinas, dormitory, guesthouse or hotel block) at or near Stasiun Whoosh Padalarang? Provide an official written statement or press release reference.",
+    "If yes: official name, full address, coordinates, number of buildings/floors/rooms/beds, capacity, and the operating or contracting entity.",
+    "If accommodation is contracted from public hotels (e.g. Hilton Padalarang Bandung, Mason Pine, Hotel Neo KBP): which properties, contract period, allocated room counts, agreed rates, and the KCIC contract owner/contact.",
+    "Whether the Gaia Lounge at KCIC Padalarang (opened by The Gaia Hotel Bandung, Feb 2026) has any crew-rest or crew-accommodation function, or is purely a passenger lounge.",
+    "Crew rest facilities inside Stasiun Padalarang or connected to Depo Tegalluar operations (if any), with capacity, access rules and whether overnight stays are permitted.",
+    "KCIC contact person and department responsible for crew accommodation at the Padalarang end (name, role, phone, email).",
+    "Any KCIC-approved transport arrangement between Stasiun Whoosh Padalarang and crew lodging (including the free station pick-up advertised by Hilton), with distances and travel times.",
+    "Permission and usage rights for any official KCIC photographs of crew accommodation facilities at Padalarang."
+  ]
+}

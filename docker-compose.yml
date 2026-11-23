@@ -1,0 +1,61 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: whoosh-stay-postgres
+    environment:
+      POSTGRES_USER: whoosh
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-whoosh_dev_password}
+      POSTGRES_DB: whoosh_stay
+    ports:
+      - "5433:5432"
+    volumes:
+      - whoosh_pgdata:/var/lib/postgresql/data
+      - ./infrastructure/docker/postgres/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U whoosh -d whoosh_stay"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  minio:
+    # Official minio/minio images are unavailable in this environment; Bitnami legacy
+    # packages the same MinIO server and client binaries for local development.
+    image: bitnamilegacy/minio:latest
+    container_name: whoosh-stay-minio
+    user: "0"
+    entrypoint: ["/opt/bitnami/minio/bin/minio"]
+    command: ["server", "/data", "--address", ":9000", "--console-address", ":9001"]
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY:-whoosh_minio}
+      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY:-whoosh_minio_password}
+    ports:
+      - "9110:9000"
+      - "9111:9001"
+    volumes:
+      - whoosh_miniodata:/data
+
+  minio-init:
+    image: bitnamilegacy/minio:latest
+    container_name: whoosh-stay-minio-init
+    depends_on:
+      - minio
+    user: "0"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY:-whoosh_minio}
+      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY:-whoosh_minio_password}
+    entrypoint:
+      - /bin/sh
+      - -c
+      - >
+        until /opt/bitnami/minio-client/bin/mc alias set local http://minio:9000 "$$MINIO_ROOT_USER" "$$MINIO_ROOT_PASSWORD"; do
+          echo 'waiting for minio'; sleep 2;
+        done;
+        /opt/bitnami/minio-client/bin/mc mb --ignore-existing local/${MINIO_BUCKET_ASSETS:-whoosh-stay-assets};
+        /opt/bitnami/minio-client/bin/mc mb --ignore-existing local/${MINIO_BUCKET_EVIDENCE:-whoosh-stay-evidence};
+        /opt/bitnami/minio-client/bin/mc anonymous set none local/${MINIO_BUCKET_ASSETS:-whoosh-stay-assets};
+        /opt/bitnami/minio-client/bin/mc anonymous set none local/${MINIO_BUCKET_EVIDENCE:-whoosh-stay-evidence};
+        echo 'minio buckets ready';
+
+volumes:
+  whoosh_pgdata:
+  whoosh_miniodata:

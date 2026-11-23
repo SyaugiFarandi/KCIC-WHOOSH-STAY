@@ -1,0 +1,319 @@
+{
+  "locationCode": "KARAWANG",
+  "locationName": "Stasiun Whoosh Karawang",
+  "researchedAt": "2026-11-22",
+  "stationContext": "Stasiun Whoosh Karawang is a KCIC high-speed rail station in Desa Wanakerta, Kecamatan Telukjambe Barat, Karawang Regency, West Java, officially opened on 24 December 2024 per KCIC press release (23 Dec 2024). It is accessed via Jl. Badami / Jl. Trans Hexa Karawang and Exit Tol Karawang Barat KM 47 of the Jakarta-Cikampek toll road; KCIC provides Grab/Golden Bird taxis and free shuttles to The Grand Outlet and Summarecon Villagio Outlets for Whoosh ticket holders.",
+  "properties": [
+    {
+      "name": "Resinda Hotel Karawang (Managed by Padma Hotels)",
+      "address": "Jl. Resinda Raya No. 1, Purwadana, Telukjambe Timur, Karawang, Jawa Barat 41361, Indonesia",
+      "latitude": null,
+      "longitude": null,
+      "distanceKm": null,
+      "propertyType": "HOTEL",
+      "classification": "VERIFIED_PUBLIC",
+      "facilities": [
+        "Emerald Pool (lagoon-inspired swimming pool)",
+        "Resinda Oasis Park",
+        "Business centre",
+        "Concierge service",
+        "Fitness centre",
+        "Sento Japanese bath",
+        "Sauna and steam room",
+        "Airport transfer",
+        "Shuttle service",
+        "Car rental",
+        "Laundry",
+        "The Oryza Restaurant",
+        "Inaho Japanese Restaurant",
+        "Hai Wang Chinese Restaurant",
+        "Katja Lounge",
+        "Meeting & event facilities",
+        "Resinda Park Mall (adjacent)"
+      ],
+      "website": "https://resindahotel.com/",
+      "contactName": null,
+      "contactPhone": "+62 267 8622000",
+      "notes": "Public 4-star hotel managed by Padma Hotels; existence, address and phone confirmed on official property website (contact page). Official homepage states 236 smart rooms and offers a 'Residential Meeting Package' (full-board, twin-sharing) relevant to corporate/crew-style long stays, but no KCIC relationship is stated. Traveloka article states '2,50 km dari Stasiun Karawang' but its station description conflates the conventional Karawang station with the Whoosh station, so distance to Stasiun Whoosh Karawang is left null pending verification. Reservation email: reservation@resindahotel.com.",
+      "sources": [
+        {
+          "url": "https://resindahotel.com/contact.php",
+          "title": "Contact Resinda Hotel Karawang",
+          "sourceType": "OFFICIAL_PROPERTY",
+          "checkedAt": "2026-11-22",
+          "photoUrl": null,
+          "photoRights": null,
+          "photoTakenAt": null,
+          "notes": "Official contact page: address 'Jl. Resinda Raya No. 1, West Karawang 41361, West Java, Indonesia', phone +62 267 8622000, reservation email reservation@resindahotel.com."
+        },
+        {
+          "url": "https://resindahotel.com/",
+          "title": "Resinda Hotel Karawang Managed by Padma Hotels",
+          "sourceType": "OFFICIAL_PROPERTY",
+          "checkedAt": "2026-11-22",
+          "photoUrl": null,
+          "photoRights": null,
+          "photoTakenAt": null,
+          "notes": "Official homepage: 236 smart rooms; facilities menu lists pool, fitness centre, sento bath, sauna/steam, business centre, restaurants, shuttle, airport transfer; Residential Meeting Package with twin-sharing room accommodation."
+        },
+        {
+          "url": "https://www.traveloka.com/id-id/explore/destination/stasiun-whoosh-karawang-alamat-cara-ke-sana-dan-hotel-terdekat-gt/560630",
+          "title": "Stasiun Whoosh Karawang: Alamat, Cara ke Sana, dan Hotel Terdekat",
+          "sourceType": "OTHER",
+          "checkedAt": "2026-11-22",
+          "photoUrl": null,
+          "photoRights": null,
+          "photoTakenAt": null,
+          "notes": "Traveloka listing article gives full address (Jl. Resinda Raya No.1, Purwadana, Telukjambe Timur, Karawang 41361), 4-star rating, and states 2.50 km 'dari Stasiun Karawang' (reference station ambiguous; article mixes conventional and Whoosh station details)."
+        }
+      ]
+    },
+    {
+      "name": "Novotel Karawang",
+      "address": "Jl. Interchange Karawang Barat, Margakaya, Telukjambe Barat, Karawang, Jawa Barat 41361, Indonesia",
+      "latitude": -6.33776,
+      "longitude": 107.272111,
+      "distanceKm": null,
+      "propertyType": "HOTEL",
+      "classification": "VERIFIED_PUBLIC",
+      "facilities": [
+        "Swimming pool",
+        "Car park",
+        "Restaurant (Nuance All Day Dining)",
+        "Wheelchair accessible",
+        "Fitness center",
+        "Wi-Fi (free)",
+        "Air conditioning",
+        "Breakfast",
+        "Bar",
+        "Meeting rooms",
+        "Room service",
+        "Spa"
+      ],
+      "website": "https://all.accor.com/hotel/B3Z6/index.en.shtml",
+      "contactName": null,
+      "contactPhone": "+62 267 6483333",
+      "notes": "Public 4-star Accor hotel in Margakaya, Telukjambe Barat (same district as Stasiun Whoosh Karawang). Address, GPS coordinates (-6.33776, 107.272111), phone and amenities confirmed on official Accor page, which states 172 rooms and offers rooms, suites and a 1-bedroom apartment unit. Accor page states 2 km to Karawang Barat toll exit and 7 km to 'Karawang Station' (conventional rail station, NOT the Whoosh station); no stated distance to Stasiun Whoosh Karawang, so distanceKm left null. Contact email: HB3Z6@accor.com. Traveloka article states 4.75 km 'dari Stasiun Karawang' (ambiguous reference).",
+      "sources": [
+        {
+          "url": "https://all.accor.com/hotel/B3Z6/index.en.shtml",
+          "title": "Novotel Karawang - ALL - Accor",
+          "sourceType": "OFFICIAL_PROPERTY",
+          "checkedAt": "2026-11-22",
+          "photoUrl": null,
+          "photoRights": null,
+          "photoTakenAt": null,
+          "notes": "Official Accor fact sheet: full address, GPS -6.33776/107.272111, phone +622676483333, email HB3Z6@accor.com, 4 stars, 172 rooms, on-site services list (pool, car park, restaurant, fitness, spa, bar, meeting rooms, Wi-Fi, room service), 2 km to Karawang Barat highway exit, 7 km to Karawang (conventional) station."
+        },
+        {
+          "url": "https://www.traveloka.com/id-id/explore/destination/stasiun-whoosh-karawang-alamat-cara-ke-sana-dan-hotel-terdekat-gt/560630",
+          "title": "Stasiun Whoosh Karawang: Alamat, Cara ke Sana, dan Hotel Terdekat",
+          "sourceType": "OTHER",
+          "checkedAt": "2026-11-22",
+          "photoUrl": null,
+          "photoRights": null,
+          "photoTakenAt": null,
+          "notes": "Lists Novotel Karawang as hotel near the station with address Jalan Interchange Karawang Barat, Margakaya, Telukjambe Barat 41361 and stated distance 4.75 km 'dari Stasiun Karawang' (reference station ambiguous)."
+        }
+      ]
+    },
+    {
+      "name": "favehotel Karawang",
+      "address": "Jalan Arteri Karawang Barat No. 8, Margakaya, Kec. Telukjambe Barat, Karawang, Jawa Barat 41361, Indonesia",
+      "latitude": null,
+      "longitude": null,
+      "distanceKm": null,
+      "propertyType": "HOTEL",
+      "classification": "VERIFIED_PUBLIC",
+      "facilities": [
+        "Restaurant",
+        "Indoor swimming pool",
+        "Spa",
+        "Fitness center"
+      ],
+      "website": null,
+      "contactName": null,
+      "contactPhone": null,
+      "notes": "Public budget hotel (3-star per Traveloka) on Jl. Arteri Karawang Barat, Margakaya, Telukjambe Barat - the same arterial road area as the Whoosh station access (Jl. Badami). Address and amenities confirmed by Traveloka listing article; official chain site favehotels.com is JavaScript-only and could not be read, so no official-site confirmation yet. Traveloka states 5.06 km 'dari Stasiun Karawang' (reference station ambiguous, left null). Phone not verified from a fetched source.",
+      "sources": [
+        {
+          "url": "https://www.traveloka.com/id-id/explore/destination/stasiun-whoosh-karawang-alamat-cara-ke-sana-dan-hotel-terdekat-gt/560630",
+          "title": "Stasiun Whoosh Karawang: Alamat, Cara ke Sana, dan Hotel Terdekat",
+          "sourceType": "OTHER",
+          "checkedAt": "2026-11-22",
+          "photoUrl": null,
+          "photoRights": null,
+          "photoTakenAt": null,
+          "notes": "Traveloka article: favehotel Karawang, 3-star, address Jalan Arteri Karawang Barat No.8, Margakaya, Telukjambe Barat 41361; facilities restaurant, indoor pool, spa, fitness center; stated 5.06 km 'dari Stasiun Karawang'."
+        }
+      ]
+    },
+    {
+      "name": "Delonix Hotel Karawang",
+      "address": "Komplek Palm Spring Golf, Jalan Tol Jakarta-Cikampek KM 47, Blok D No. 1, Sukaluyu, Telukjambe Timur, Karawang, Jawa Barat 41361, Indonesia",
+      "latitude": null,
+      "longitude": null,
+      "distanceKm": null,
+      "propertyType": "HOTEL",
+      "classification": "VERIFIED_PUBLIC",
+      "facilities": [
+        "Outdoor swimming pool",
+        "Natural hot springs (onsen-style)",
+        "Sauna",
+        "Spa",
+        "Massage room",
+        "Gym (free)",
+        "Public parking (free)",
+        "Airport pick-up / drop-off",
+        "Japanese restaurant",
+        "Bar",
+        "Room service",
+        "Billiards room",
+        "Gaming area",
+        "Free Wi-Fi (in rooms)"
+      ],
+      "website": null,
+      "contactName": null,
+      "contactPhone": null,
+      "notes": "Public 4-star hotel (per Traveloka) in the Palm Spring / Sedana Golf complex at KM 47 Jakarta-Cikampek, Telukjambe Timur. Address confirmed by two independent listing sources (Traveloka article and Trip.com detail page with structured PostalAddress). Trip.com lists amenities above. Traveloka states 5.09 km 'dari Stasiun Karawang' (reference station ambiguous, left null). Phone (0267) 644370 appears in a recruitment-site snippet but was not verified on an official page, so left null.",
+      "sources": [
+        {
+          "url": "https://us.trip.com/hotels/east-telukjambe-hotel-detail-1688824/delonix-hotel-karawang/",
+          "title": "Delonix Hotel Karawang (East Telukjambe) - 2026 Prices, Reviews & Deals | Trip.com",
+          "sourceType": "OTHER",
+          "checkedAt": "2026-11-22",
+          "photoUrl": null,
+          "photoRights": null,
+          "photoTakenAt": null,
+          "notes": "Trip.com listing: address 'Palm Spring Golf, Komplek Barat No.KM. 47, Sukaluyu, Telukjambe Timur, Puseurjaya, East Telukjambe, Karawang, West Java, 41361'; amenities outdoor pool, hot springs, sauna, spa, massage, gym, free parking, airport transfers, Japanese restaurant, bar, billiards; check-in 14:00 / check-out 12:00."
+        },
+        {
+          "url": "https://www.traveloka.com/id-id/explore/destination/stasiun-whoosh-karawang-alamat-cara-ke-sana-dan-hotel-terdekat-gt/560630",
+          "title": "Stasiun Whoosh Karawang: Alamat, Cara ke Sana, dan Hotel Terdekat",
+          "sourceType": "OTHER",
+          "checkedAt": "2026-11-22",
+          "photoUrl": null,
+          "photoRights": null,
+          "photoTakenAt": null,
+          "notes": "Traveloka article: 4-star, address Komplek Palm Spring Golf, Jalan Tol Jakarta-Cikampek KM 47 Blok D No.1, Sukaluyu, Telukjambe Timur 41361; facilities incl. outdoor warm-water pool, hot tub, sauna, spa, steam room, restaurants/bar; stated 5.09 km 'dari Stasiun Karawang'."
+        }
+      ]
+    },
+    {
+      "name": "Puri KIIC Golf View Hotel",
+      "address": "Sedana Golf, Jl. Bedugul Golf No. 18, Sukaluyu, Telukjambe Timur, Karawang, Jawa Barat 41361, Indonesia",
+      "latitude": null,
+      "longitude": null,
+      "distanceKm": null,
+      "propertyType": "HOTEL",
+      "classification": "VERIFIED_PUBLIC",
+      "facilities": [
+        "Golf course (Sedana Golf & Country Club setting)",
+        "Sauna",
+        "Spa",
+        "Massage room",
+        "Gym",
+        "Parking (free)",
+        "Airport pick-up / drop-off",
+        "Station pick-up",
+        "Shuttle service (additional charge)",
+        "Luggage storage",
+        "Conference room",
+        "Business center",
+        "Wi-Fi in public areas",
+        "Currency exchange",
+        "Japanese restaurant (per Traveloka)",
+        "Outdoor infinity pool (per Traveloka)",
+        "Japanese-style bath (per Traveloka)"
+      ],
+      "website": null,
+      "contactName": null,
+      "contactPhone": null,
+      "notes": "Public hotel inside the Sedana Golf & Country Club complex, Telukjambe Timur. Address confirmed by Trip.com structured listing and Traveloka article. Star rating inconsistent across sources (Traveloka says 4-star, super.com snippet says 3-star) so not asserted. Traveloka states 5.07 km 'dari Stasiun Karawang' (reference station ambiguous, left null). Phone 0267-642555 / 08111991337 appears only in an Instagram reel title (not fetched/verified), left null. Trip.com lists a 'Station pick-up' service but does not name which station.",
+      "sources": [
+        {
+          "url": "https://us.trip.com/hotels/east-telukjambe-hotel-detail-6069441/puri-kiic-golf-view-hotel/",
+          "title": "Puri Kiic Golf View Hotel (East Telukjambe) - 2026 Prices, Reviews & Deals | Trip.com",
+          "sourceType": "OTHER",
+          "checkedAt": "2026-11-22",
+          "photoUrl": null,
+          "photoRights": null,
+          "photoTakenAt": null,
+          "notes": "Trip.com listing: address 'Sedana Golf, Jl. Bedugul Golf No.18, Sukaluyu, East Telukjambe, Karawang, West Java, 41361'; amenities golf course, sauna, spa, massage, gym, free parking, airport/station pick-up, conference room, business center, Wi-Fi in public areas."
+        },
+        {
+          "url": "https://www.traveloka.com/id-id/explore/destination/stasiun-whoosh-karawang-alamat-cara-ke-sana-dan-hotel-terdekat-gt/560630",
+          "title": "Stasiun Whoosh Karawang: Alamat, Cara ke Sana, dan Hotel Terdekat",
+          "sourceType": "OTHER",
+          "checkedAt": "2026-11-22",
+          "photoUrl": null,
+          "photoRights": null,
+          "photoTakenAt": null,
+          "notes": "Traveloka article: address Jl. Bedugul Golf No.18, Sukaluyu, Telukjambe Timur 41361; 4-star per article; Japanese restaurant with golf view, gym, outdoor infinity pool, spa, sauna, hot tub, Japanese-style bath; stated 5.07 km 'dari Stasiun Karawang'."
+        }
+      ]
+    },
+    {
+      "name": "Tamansari Mahogany Apartment",
+      "address": "Jl. Arteri No. 8, Dsn Badami, Desa Margakaya, Telukjambe Barat, Karawang, Jawa Barat 41361, Indonesia",
+      "latitude": null,
+      "longitude": null,
+      "distanceKm": null,
+      "propertyType": "APARTMENT",
+      "classification": "VERIFIED_PUBLIC",
+      "facilities": [
+        "Outdoor swimming pool",
+        "Children's pool",
+        "Gym / fitness center",
+        "Parking (self-parking, additional charge)",
+        "Snack bar / bakery",
+        "Air conditioning (units)",
+        "Flat-screen TV with cable (units)",
+        "Limited-hours front desk"
+      ],
+      "website": null,
+      "contactName": null,
+      "contactPhone": "+62-81381774126",
+      "notes": "Apartment complex on Jl. Arteri Karawang Barat (Badami, Margakaya, Telukjambe Barat) - the same road corridor used to access Stasiun Whoosh Karawang; developer's official site tamansarimahogany.com exists but is bot-blocked, and its Instagram bio markets the complex as 'dekat dengan Stasiun Kereta Cepat Whoosh' (seen in search snippet only, not fetched). Address and amenities confirmed via Trip.com operator listing (13 rentable units listed by that operator - NOT the whole complex's unit count; multiple independent operators rent units here, e.g. 'by SCT', 'by Cozy', 'Seven Living'). Phone is the listing operator's contact, not complex management. No source gives a numeric distance to the Whoosh station, so distanceKm null. Deposit Rp350,000 per the listing; no pets; min check-in age 18.",
+      "sources": [
+        {
+          "url": "https://id.trip.com/hotels/west-telukjambe-hotel-detail-45756613/tamansari-mahogany-apartment/",
+          "title": "Tamansari Mahogany Apartment, Telukjambe Barat - Harga & Promo Terbaru 2026 | Trip.com",
+          "sourceType": "OTHER",
+          "checkedAt": "2026-11-22",
+          "photoUrl": null,
+          "photoRights": null,
+          "photoTakenAt": null,
+          "notes": "Trip.com listing: structured address 'Jl. Arteri no 8, Margakaya, Telukjambe Barat, Kabupaten Karawang, Jawa Barat, 41361'; phone +62-81381774126; 13 rooms listed by this operator; outdoor pool, gym, children's pool, paid parking, snack bar; check-in 14:00 / check-out 12:00; Rp350,000 deposit."
+        },
+        {
+          "url": "https://tamansarimahogany.com/lokasi/",
+          "title": "Lokasi - Tamansari Mahogany (developer site; bot-verification wall on fetch)",
+          "sourceType": "OFFICIAL_PROPERTY",
+          "checkedAt": "2026-11-22",
+          "photoUrl": null,
+          "photoRights": null,
+          "photoTakenAt": null,
+          "notes": "Official developer location page exists; search snippet shows contact address 'Jl Arteri No. 8, Dsn Badami, Desa Margakaya, Telukjambe Barat, Karawang, Jawa Barat'. Direct fetch returned a bot-verification page, so page body could not be read."
+        }
+      ]
+    }
+  ],
+  "missingInfo": [
+    "No official KCIC source (kcic.co.id press releases or Whoosh site) found that mentions KCIC-operated or KCIC-contracted crew accommodation (mess/rumah dinas/asrama) at or near Stasiun Whoosh Karawang; the 23 Dec 2024 station-opening press release covers access roads, taxis and outlet shuttles only. No property can be classified VERIFIED_OFFICIAL_KCIC.",
+    "Verified distances from each property to Stasiun Whoosh Karawang specifically: Traveloka's stated distances (2.50-5.09 km) are 'dari Stasiun Karawang' and the article's station description conflates the conventional KAI Karawang station (local Jakarta-Purwakarta trains, 4 tracks, EMU-CIT depot) with the Whoosh station, so they were not adopted as distanceKm.",
+    "Coordinates for all properties except Novotel Karawang (only Accor publishes GPS).",
+    "Verified phone numbers for favehotel Karawang, Delonix Hotel Karawang and Puri KIIC Golf View Hotel from official/fetched pages.",
+    "Official property websites for Delonix, Puri KIIC and favehotel Karawang (favehotels.com is JS-only; tamansarimahogany.com is bot-blocked).",
+    "Guest houses / homestays / kos with concrete verifiable addresses immediately around the station (Wanakerta / Badami area); OTA landmark pages list mostly budget hotels in greater Karawang/Cikarang without addresses readable via fetch.",
+    "Photo URLs with confirmed usage rights for any property (all photoUrl left null).",
+    "Room counts/capacity for all properties except where explicitly stated (Resinda 236 rooms, Novotel 172 rooms per official sites; Tamansari listing's 13 units is one operator's inventory only)."
+  ],
+  "kcicDataRequests": [
+    "Does KCIC operate, own, or contract any crew accommodation (mess, rumah dinas, asrama, or hotel blocks) at/near Stasiun Whoosh Karawang or the Karawang maintenance/inspection depot area? If yes: official name, address, coordinates, building/room/bed counts, and managing unit.",
+    "If crews rest at Karawang, which public hotels (if any) are under KCIC corporate contract, with what rate agreements and booking contacts?",
+    "Official station address and coordinates of Stasiun Whoosh Karawang (Wanakerta, Telukjambe Barat) to disambiguate from the conventional KAI Stasiun Karawang, so property distances can be computed correctly.",
+    "KCIC contact (Corporate Secretary / GA / depot manager) responsible for crew lodging arrangements at Karawang, and whether crew shuttle transport between station and lodging exists.",
+    "Any KCIC procurement (pengadaan) notices for accommodation/lodging services in Karawang that would identify contracted properties."
+  ]
+}

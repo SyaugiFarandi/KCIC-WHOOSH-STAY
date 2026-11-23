@@ -1,0 +1,308 @@
+{
+  "locationCode": "DEPO-501",
+  "locationName": "Depo 501 KCIC (lokasi perlu konfirmasi)",
+  "researchedAt": "2026-11-22",
+  "stationContext": "UNCONFIRMED PUBLICLY. The code 'DEPO-501' / 'Depo 501' could not be found in any official KCIC publication or reputable news source (exact-term web searches returned no results); it appears to be an internal location code provided by the project team (it also appears without an address in this repo's seed data and DATA_READINESS.md). The most likely referent is Depo Tegalluar, the only rolling-stock maintenance depot on the Whoosh Jakarta-Bandung high-speed line: KCIC's official press release 'Mengenal Depo Tegalluar, Rumah Kereta Api Cepat Jakarta-Bandung' (26 Sep 2022, https://kcic.co.id/kcic-siaran-pers/mengenal-depo-tegalluar-rumah-kereta-api-cepat-jakarta-bandung/) describes it as the maintenance home of the KCIC400AF trainsets with seven technical areas (Dynamic Monitor Shed, Stabling Zone with 14 tracks, Temporary Repair & Loading Wheel-Set, Train Washing, Dynamic Debugging Zone, Rescue Facility, Joint Workshop). Kompas (28 Sep 2022, https://bandung.kompas.com/read/2022/09/28/195236578/mengintip-depo-tegalluar-tempat-perawatan-kereta-api-cepat-jakarta-bandung) places the depot in Desa Tegalluar, Kecamatan Bojongsoang, Kabupaten Bandung, Jawa Barat. Wikipedia's 'High-speed rail in Indonesia' article likewise lists the line's single depot at Tegalluar. IMPORTANT DISTINCTION: the depot (Desa Tegalluar, Bojongsoang) is NOT the same site as the passenger station Stasiun Tegalluar (Cibiru Hilir, Cileunyi); most lodging articles reference the station, so distances in those articles are station-relative and cannot be used as distances to the depot. CREW ACCOMMODATION: no fetched official KCIC source explicitly states that KCIC operates crew lodging at the depot. KCIC official social-media posts surfaced in search snippets mention a depot area of ~58 Ha including 'Gedung OCC' and 'Gedung tempat istirahat' (rest building), but these snippets were not retrievable as full official pages, so this remains an unverified lead, NOT a confirmed KCIC crew accommodation. All properties below are public lodging in eastern Bandung (Gedebage/Cinambo/Panyileukan/Buahbatu corridor along Jl. Soekarno-Hatta) near the Tegalluar station/depot general area; proximity to the depot itself is unconfirmed.",
+  "properties": [
+    {
+      "name": "Shakti Hotel Bandung",
+      "address": "Jl. Soekarno-Hatta No.735, Cimenerang, Gedebage, Kota Bandung, Jawa Barat",
+      "latitude": -6.936958,
+      "longitude": 107.6976556,
+      "distanceKm": null,
+      "propertyType": "HOTEL",
+      "classification": "VERIFIED_PUBLIC",
+      "facilities": [
+        "Fitness center",
+        "Swimming pool",
+        "Spa treatments",
+        "24-hour front desk",
+        "Restaurant",
+        "Free Wi-Fi",
+        "Meeting rooms"
+      ],
+      "website": "https://bandung.shaktihotels.com",
+      "contactName": null,
+      "contactPhone": "+622287836000",
+      "notes": "Public hotel operated by Shakti Hotel Group. Address, phone and facilities confirmed on the group's official site, which also embeds map coordinates (-6.936958, 107.6976556) — the only reason lat/long are filled. Located in Gedebage on the Jl. Soekarno-Hatta corridor toward Tegalluar; distance to the depot itself is not stated by any source, so distanceKm is null. A local travel article lists it as a four-star option near Stasiun Tegalluar. No source states room count, capacity, crew rates or any KCIC relationship.",
+      "sources": [
+        {
+          "url": "https://shaktihotels.com/",
+          "title": "Shakti Hotel Group (official group website)",
+          "sourceType": "OFFICIAL_PROPERTY",
+          "checkedAt": "2026-11-22",
+          "photoUrl": null,
+          "photoRights": null,
+          "photoTakenAt": null,
+          "notes": "Official group site. Confirms name, address 'West Java, Bandung, Jl. Soekarno-Hatta No.735, Cimenerang', phone 622287836000, email reservation.shaktibdg@gmail.com, property site bandung.shaktihotels.com, embedded map latitude -6.936958 / longitude 107.6976556, and facilities: Fitness Center, Swimming Pool, Spa Treatments, 24-Hour Front Desk, Signature Restaurant, Free Wi-Fi, meeting rooms."
+        },
+        {
+          "url": "https://lihatdisini.com/hotel-dan-apartemen-sekitar-stasiun-tegalluar-bandung/",
+          "title": "+5 Hotel dan Apartemen Sekitar Stasiun Tegalluar Bandung",
+          "sourceType": "PUBLIC_ARTICLE",
+          "checkedAt": "2026-11-22",
+          "photoUrl": null,
+          "photoRights": null,
+          "photoTakenAt": null,
+          "notes": "Blog article (18 Nov 2023) lists Shakti Hotel Bandung as a four-star hotel near Stasiun Tegalluar at Jalan Soekarno Hatta No. 735 Gede Bage. No distance figure given for this property."
+        }
+      ]
+    },
+    {
+      "name": "Grand Cordela Hotel Bandung",
+      "address": "Jl. Soekarno-Hatta No.791B, Bandung, West Java 40294, Indonesia",
+      "latitude": null,
+      "longitude": null,
+      "distanceKm": null,
+      "propertyType": "HOTEL",
+      "classification": "VERIFIED_PUBLIC",
+      "facilities": [
+        "Swimming pool",
+        "Spa and massage (operating hours 14.00-21.30)",
+        "Laundry service",
+        "Ballroom (Alfa Sky Ballroom)",
+        "Meeting rooms (Omega, Alfa)",
+        "Restaurant (dining)",
+        "Deluxe Pool Access rooms"
+      ],
+      "website": "https://www.omegahotelmanagement.com/h/grand-cordela-bandung/",
+      "contactName": null,
+      "contactPhone": "+62 22 8788 3788",
+      "notes": "Public hotel managed by Omega Hotel Management (PT Omega Hotel Manajemen). Address, phone (+62 22 8788 3788), fax (+62 22 8788 6258) and email (bandung.reservation@grandcordelahotels.com) confirmed on the official management company's contact page, which also states it is 'easily accessed from Buah Batu Toll Gate (10 mins)'. Facilities confirmed on the official facilities page. Star rating not stated consistently across sources, so omitted. No coordinates or depot distance stated; no room count, crew rates or KCIC relationship stated.",
+      "sources": [
+        {
+          "url": "https://www.omegahotelmanagement.com/h/grand-cordela-bandung/contact",
+          "title": "Grand Cordela Hotel Bandung - Contact Us (Omega Hotel Management, official)",
+          "sourceType": "OFFICIAL_PROPERTY",
+          "checkedAt": "2026-11-22",
+          "photoUrl": null,
+          "photoRights": null,
+          "photoTakenAt": null,
+          "notes": "Official contact page. Confirms 'ADDRESS Jl. Soekarno-Hatta No.791B, Bandung West Java 40294, Indonesia; PHONE t. +62 22 8788 3788, f. +62 22 8788 6258; EMAIL bandung.reservation@grandcordelahotels.com' and access 'from Buah Batu Toll Gate (10 mins)'."
+        },
+        {
+          "url": "https://www.omegahotelmanagement.com/h/grand-cordela-bandung/facilities",
+          "title": "Grand Cordela Hotel Bandung - Hotel Facilities (Omega Hotel Management, official)",
+          "sourceType": "OFFICIAL_PROPERTY",
+          "checkedAt": "2026-11-22",
+          "photoUrl": null,
+          "photoRights": null,
+          "photoTakenAt": null,
+          "notes": "Official facilities page. Explicitly lists Alfa Sky Ballroom (capacity 400 pax), meeting rooms Omega (10-15 pax) and Alfa (25-70 pax), Laundry service, Swimming Pool, and spa & massage 'Wellness' (operating hours 14.00-21.30). Room menu on same site includes Deluxe Pool Access. Ballroom/meeting capacities are venue capacities, NOT lodging capacity."
+        }
+      ]
+    },
+    {
+      "name": "Bali World Hotel",
+      "address": "Jl. Soekarno-Hatta By Pass Timur No.713, Jatisari, Kec. Buahbatu, Kota Bandung, Jawa Barat 40286, Indonesia",
+      "latitude": -6.938414,
+      "longitude": 107.663101,
+      "distanceKm": null,
+      "propertyType": "HOTEL",
+      "classification": "VERIFIED_PUBLIC",
+      "facilities": [
+        "Restaurant",
+        "Outdoor swimming pool",
+        "Sauna",
+        "Spa (surcharge)",
+        "Massage room",
+        "Gym (free)",
+        "Free private parking",
+        "Luggage storage (free)",
+        "Bar",
+        "Meeting room (surcharge)",
+        "Multi-function room",
+        "Free Wi-Fi in public areas",
+        "Concierge service"
+      ],
+      "website": null,
+      "contactName": null,
+      "contactPhone": null,
+      "notes": "Public hotel in Jatisari, Buahbatu, on the Jl. Soekarno-Hatta corridor. Existence, full address and facilities confirmed on a Trip.com listing page whose embedded map data states lat -6.938414 / lng 107.663101 (Google map type, precise coordinates) — the only reason lat/long are filled. A local article lists it as a 3-star Bali-style hotel '11 km' from Stasiun Tegalluar (station, NOT the depot), so distanceKm remains null. No official property website verified; no phone, room count, crew rates or KCIC relationship stated.",
+      "sources": [
+        {
+          "url": "https://id.trip.com/hotels/buahbatu-hotel-detail-690409/bali-world-hotel/",
+          "title": "Bali World Hotel, Kecamatan Buahbatu - Harga & Promo Terbaru (Trip.com listing)",
+          "sourceType": "OTHER",
+          "checkedAt": "2026-11-22",
+          "photoUrl": null,
+          "photoRights": null,
+          "photoTakenAt": null,
+          "notes": "Reputable OTA listing. Structured data states address 'Jl. Soekarno-Hatta By Pass Timur No.713, Jatisari, Kec. Buahbatu, Kota Bandung, Jawa Barat 40286, Indonesia'; embedded hotel map data states lat '-6.938414', lng '107.663101'. 'Layanan & Fasilitas' section explicitly lists: Restoran, Kolam Renang Outdoor, Sauna, Spa (biaya tambahan), Ruang pijat, Gym (gratis), Area Parkir Pribadi (gratis), Penyimpanan bagasi (gratis), Bar, Ruang pertemuan (biaya tambahan), Ruang multi-fungsi, Wi-Fi di tempat umum (gratis), concierge. FAQ confirms pool; check-in 14:00 / check-out 12:00."
+        },
+        {
+          "url": "https://lihatdisini.com/hotel-dan-apartemen-sekitar-stasiun-tegalluar-bandung/",
+          "title": "+5 Hotel dan Apartemen Sekitar Stasiun Tegalluar Bandung",
+          "sourceType": "PUBLIC_ARTICLE",
+          "checkedAt": "2026-11-22",
+          "photoUrl": null,
+          "photoRights": null,
+          "photoTakenAt": null,
+          "notes": "Blog article (18 Nov 2023) lists Bali World Hotel at Jl. Soekarno Hatta No. 713 By-Pass Timur, describes Bali-style interiors and a swimming pool, and states it is about 11 km from Stasiun Tegalluar (the passenger station, not the depot)."
+        }
+      ]
+    },
+    {
+      "name": "Urbanview Hotel 3M Syariah",
+      "address": "3P66+6Wf, Cipadung Kidul, Panyileukan, Bandung City, West Java 40614, Indonesia",
+      "latitude": -6.939481,
+      "longitude": 107.71226,
+      "distanceKm": null,
+      "propertyType": "HOTEL",
+      "classification": "VERIFIED_PUBLIC",
+      "facilities": [],
+      "website": null,
+      "contactName": null,
+      "contactPhone": null,
+      "notes": "Budget syariah hotel (Urbanview is a RedDoorz-affiliated budget brand) in Cipadung Kidul, Panyileukan, eastern Bandung. Existence and concrete address (given as a Plus Code + village/district) confirmed on an EaseMyTrip listing whose structured data also states geo coordinates -6.939481 / 107.71226 — the only reason lat/long are filled. The listing rates it 2-star and its amenityFeature list is empty, so no facilities are claimed. A tiket.com search snippet gives a fuller street address 'Jl. Terusan Bumi Panyileukan, blok samian rt01 rw02 cipadung kidul, kecamatan panyileukan, kota bandung Jawa Barat 40614' but that page could not be fetched (403), so it is recorded as a lead only. Phone number on the listing appears to be the OTA's call center, not the property's, so contactPhone is null. No depot distance, room count, crew rates or KCIC relationship stated.",
+      "sources": [
+        {
+          "url": "https://www.easemytrip.com/hotels/urbanview-hotel-3m-syariah-10356698/",
+          "title": "Urbanview Hotel 3M Syariah (EaseMyTrip listing)",
+          "sourceType": "OTHER",
+          "checkedAt": "2026-11-22",
+          "photoUrl": null,
+          "photoRights": null,
+          "photoTakenAt": null,
+          "notes": "OTA listing. Structured data (LodgingBusiness) confirms name 'Urbanview Hotel 3M Syariah', address '3P66+6Wf, Cipadung Kidul, Panyileukan, Bandung City, West Java 40614, Indonesia', geo latitude '-6.939481' / longitude '107.71226', starRating 2, description 'A 2-star option perfect for travelers seeking clean, simple rooms'. amenityFeature is an empty array; room type shown: 'Superior Room without Air Conditioning'."
+        }
+      ]
+    },
+    {
+      "name": "De'Kayakini Hotel",
+      "address": "Jalan Cipamokolan Komp. Rancaloa Regency II No.7, Gedebage, Bandung, 40292",
+      "latitude": null,
+      "longitude": null,
+      "distanceKm": null,
+      "propertyType": "HOTEL",
+      "classification": "RESEARCH_CANDIDATE",
+      "facilities": [
+        "Air conditioning",
+        "En-suite bathroom",
+        "Wi-Fi"
+      ],
+      "website": null,
+      "contactName": null,
+      "contactPhone": null,
+      "notes": "Budget hotel (article describes it as OYO 342 De'Kayakini) found only in a local blog article; not yet confirmed via an official property site or an independently fetched map/listing page, hence RESEARCH_CANDIDATE. Article states it is about 8 km / ~15 minutes from Stasiun Tegalluar (the passenger station, NOT the depot), so distanceKm is null. Facilities listed are only those the article explicitly mentions. No coordinates, room count, crew rates or KCIC relationship stated.",
+      "sources": [
+        {
+          "url": "https://lihatdisini.com/hotel-dan-apartemen-sekitar-stasiun-tegalluar-bandung/",
+          "title": "+5 Hotel dan Apartemen Sekitar Stasiun Tegalluar Bandung",
+          "sourceType": "PUBLIC_ARTICLE",
+          "checkedAt": "2026-11-22",
+          "photoUrl": null,
+          "photoRights": null,
+          "photoTakenAt": null,
+          "notes": "Blog article (18 Nov 2023). States address 'Jalan Cipamokolan Komp.Rancaloa Regency II No.7, Gedebage, Bandung, 40292', ~8 km / ~15 min from Stasiun Tegalluar, rooms with AC, en-suite bathroom and WiFi; described as budget OYO 342 property."
+        }
+      ]
+    },
+    {
+      "name": "OYO 90712 Wisma Acidalia Syariah",
+      "address": "Jalan Merkuri Raya, Margahayu Raya, Kel. Sekejati, Gedebage, Bandung, 40286",
+      "latitude": null,
+      "longitude": null,
+      "distanceKm": null,
+      "propertyType": "GUESTHOUSE",
+      "classification": "RESEARCH_CANDIDATE",
+      "facilities": [
+        "Air conditioning",
+        "En-suite bathroom",
+        "Wi-Fi",
+        "Living area with sofa"
+      ],
+      "website": null,
+      "contactName": null,
+      "contactPhone": null,
+      "notes": "Syariah wisma (guesthouse-type budget lodging, OYO-branded per the article) found only in a local blog article; not confirmed via official site or independently fetched listing, hence RESEARCH_CANDIDATE. Article states ~9 km from Stasiun Tegalluar (station, NOT depot), so distanceKm is null. Article mentions 2 double beds and a living area with sofa in the described unit — this is a room description, not a verified property-wide bed/capacity count. No coordinates, crew rates or KCIC relationship stated.",
+      "sources": [
+        {
+          "url": "https://lihatdisini.com/hotel-dan-apartemen-sekitar-stasiun-tegalluar-bandung/",
+          "title": "+5 Hotel dan Apartemen Sekitar Stasiun Tegalluar Bandung",
+          "sourceType": "PUBLIC_ARTICLE",
+          "checkedAt": "2026-11-22",
+          "photoUrl": null,
+          "photoRights": null,
+          "photoTakenAt": null,
+          "notes": "Blog article (18 Nov 2023). States address 'jalan Merkuri Raya, Margahayu Raya, Kel. Sekejati, ... Gedebage, Bandung, 40286', ~9 km from Stasiun Tegalluar; unit described with AC, en-suite bathroom, WiFi, 2 double beds and living area with sofa."
+        }
+      ]
+    },
+    {
+      "name": "Tamansari Panoramic Apartment",
+      "address": "Jl. Soekarno Hatta No.783, Cisaranten Kulon, Arcamanik, Kota Bandung",
+      "latitude": null,
+      "longitude": null,
+      "distanceKm": null,
+      "propertyType": "APARTMENT",
+      "classification": "RESEARCH_CANDIDATE",
+      "facilities": [
+        "Indoor swimming pool",
+        "Kitchenette (in furnished units, per article)"
+      ],
+      "website": null,
+      "contactName": null,
+      "contactPhone": null,
+      "notes": "Apartment complex with rentable furnished units (studio to 2-bedroom, per article) found only in a local blog article; not confirmed via official site or independently fetched listing, hence RESEARCH_CANDIDATE. Article states ~5 km from Stasiun Tegalluar (station, NOT depot), so distanceKm is null. Unit-type mix and kitchenettes are article claims, not verified inventory; no unit counts, crew rates or KCIC relationship stated.",
+      "sources": [
+        {
+          "url": "https://lihatdisini.com/hotel-dan-apartemen-sekitar-stasiun-tegalluar-bandung/",
+          "title": "+5 Hotel dan Apartemen Sekitar Stasiun Tegalluar Bandung",
+          "sourceType": "PUBLIC_ARTICLE",
+          "checkedAt": "2026-11-22",
+          "photoUrl": null,
+          "photoRights": null,
+          "photoTakenAt": null,
+          "notes": "Blog article (18 Nov 2023). States address 'Jl. Soekarno Hatta No.783, Cisaranten Kulon, Arcamanik, Kota Bandung', ~5 km from Stasiun Tegalluar, indoor pool, and furnished studio-to-2BR units with kitchenette."
+        }
+      ]
+    },
+    {
+      "name": "The Suites @Metro Apartment",
+      "address": "Jalan Soekarno Hatta No.689, Bandung",
+      "latitude": null,
+      "longitude": null,
+      "distanceKm": null,
+      "propertyType": "APARTMENT",
+      "classification": "RESEARCH_CANDIDATE",
+      "facilities": [
+        "Outdoor swimming pool",
+        "Kitchenette (in units, per article)"
+      ],
+      "website": null,
+      "contactName": null,
+      "contactPhone": null,
+      "notes": "Apartment complex with rentable units (studio to 2-bedroom, per article) found only in a local blog article; not confirmed via official site or independently fetched listing, hence RESEARCH_CANDIDATE. The article's claim of three blocks of ~20 floors is UNVERIFIED and deliberately not recorded as building/floor data. No distance to Stasiun Tegalluar or the depot is stated for this property. No coordinates, unit counts, crew rates or KCIC relationship stated.",
+      "sources": [
+        {
+          "url": "https://lihatdisini.com/hotel-dan-apartemen-sekitar-stasiun-tegalluar-bandung/",
+          "title": "+5 Hotel dan Apartemen Sekitar Stasiun Tegalluar Bandung",
+          "sourceType": "PUBLIC_ARTICLE",
+          "checkedAt": "2026-11-22",
+          "photoUrl": null,
+          "photoRights": null,
+          "photoTakenAt": null,
+          "notes": "Blog article (18 Nov 2023). States address 'Jalan Soekarno Hatta No.689, Bandung', outdoor pool, studio-to-2BR units with kitchenette; also claims three blocks of ~20 floors (unverified blog claim, not adopted)."
+        }
+      ]
+    }
+  ],
+  "missingInfo": [
+    "What 'DEPO-501' officially designates: the exact code appears in no public KCIC or news source; it is an internal team code. Confirmation needed that it refers to Depo Tegalluar (and not another facility, e.g. a Karawang-area site).",
+    "Exact depot address/entrance and coordinates: sources place Depo Tegalluar in Desa Tegalluar, Kec. Bojongsoang, Kab. Bandung, but no fetched source gives street address or lat/long for the depot itself.",
+    "Official confirmation of crew accommodation at the depot: KCIC social-media search snippets mention 'Gedung OCC' and 'Gedung tempat istirahat' within a ~58 Ha depot area, but no full official page stating this could be fetched; existence, capacity, rooms/beds and operator of any crew rest building are unconfirmed.",
+    "Distances from each property to the depot: all published distances (blog) are to Stasiun Tegalluar (passenger station, Cibiru Hilir, Cileunyi), which is a different site from the depot in Bojongsoang; no depot-relative distances found.",
+    "No guesthouses/homestays actually inside Desa Tegalluar / Bojongsoang (the depot's village) could be verified; all verified lodging is in the Gedebage-Cinambo-Panyileukan-Buahbatu corridor of Kota Bandung.",
+    "Room counts, bed counts, capacity, corporate/crew rates and occupancy for all listed properties (not stated by any fetched source).",
+    "Direct property phone numbers for Bali World Hotel and Urbanview Hotel 3M Syariah (OTA call-center numbers excluded).",
+    "Independent verification (official site or fetched map/listing) for the four RESEARCH_CANDIDATE properties, which currently rest on a single blog article."
+  ],
+  "kcicDataRequests": [
+    "Confirm what location code DEPO-501 designates internally (Depo Tegalluar or another facility), and provide its official name, full address and coordinates/entrance point.",
+    "Confirm whether KCIC operates crew rest/accommodation buildings at the depot (e.g. the 'Gedung tempat istirahat' referenced in KCIC social posts): building name, number of rooms/beds, eligible crew, and managing unit.",
+    "If crew accommodation exists at the depot: booking/reservation contact, internal rates or cost policy, and occupancy reporting process.",
+    "Provide KCIC's approved list of external hotels/guesthouses for crew lodging near the depot, including any negotiated corporate rates and contracted room blocks.",
+    "Provide official transport/shuttle arrangements and travel times between the depot and nearby hotels (to replace station-relative blog distances)."
+  ]
+}

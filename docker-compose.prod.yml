@@ -1,0 +1,113 @@
+# Production-oriented single-node profile.
+# Copy infrastructure/docker/production.env.example to infrastructure/docker/production.env,
+# fill in real values, then run:
+#   docker compose --env-file infrastructure/docker/production.env -f docker-compose.prod.yml up -d --build
+# The same file feeds Compose interpolation and the API/migrate containers.
+name: whoosh-stay
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: whoosh
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env or the shell}
+      POSTGRES_DB: whoosh_stay
+    volumes:
+      - whoosh_prod_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U whoosh -d whoosh_stay"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  minio:
+    # See docker-compose.yml for why the Bitnami legacy image is used.
+    image: bitnamilegacy/minio:latest
+    user: "0"
+    entrypoint: ["/opt/bitnami/minio/bin/minio"]
+    command: ["server", "/data", "--address", ":9000", "--console-address", ":9001"]
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY:?set MINIO_ACCESS_KEY in .env or the shell}
+      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY:?set MINIO_SECRET_KEY in .env or the shell}
+    volumes:
+      - whoosh_prod_miniodata:/data
+    restart: unless-stopped
+
+  minio-init:
+    image: bitnamilegacy/minio:latest
+    user: "0"
+    depends_on:
+      - minio
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY:?set MINIO_ACCESS_KEY in .env or the shell}
+      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY:?set MINIO_SECRET_KEY in .env or the shell}
+      MINIO_BUCKET_ASSETS: ${MINIO_BUCKET_ASSETS:-whoosh-stay-assets}
+      MINIO_BUCKET_EVIDENCE: ${MINIO_BUCKET_EVIDENCE:-whoosh-stay-evidence}
+    entrypoint:
+      - /bin/sh
+      - -c
+      - >
+        until /opt/bitnami/minio-client/bin/mc alias set local http://minio:9000 "$$MINIO_ROOT_USER" "$$MINIO_ROOT_PASSWORD"; do
+          echo 'waiting for minio'; sleep 2;
+        done;
+        /opt/bitnami/minio-client/bin/mc mb --ignore-existing local/$$MINIO_BUCKET_ASSETS;
+        /opt/bitnami/minio-client/bin/mc mb --ignore-existing local/$$MINIO_BUCKET_EVIDENCE;
+        /opt/bitnami/minio-client/bin/mc anonymous set none local/$$MINIO_BUCKET_ASSETS;
+        /opt/bitnami/minio-client/bin/mc anonymous set none local/$$MINIO_BUCKET_EVIDENCE;
+        echo 'minio buckets ready';
+    restart: "no"
+
+  migrate:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/api.Dockerfile
+    image: whoosh-stay-api:local
+    command: ["npx", "prisma", "migrate", "deploy"]
+    env_file:
+      - infrastructure/docker/production.env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+
+  api:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/api.Dockerfile
+    image: whoosh-stay-api:local
+    env_file:
+      - infrastructure/docker/production.env
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      minio:
+        condition: service_started
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:4000/health/ready').then((r) => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))",
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  web:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/web.Dockerfile
+    image: whoosh-stay-web:local
+    ports:
+      - "${WEB_PORT:-8080}:8080"
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  whoosh_prod_pgdata:
+  whoosh_prod_miniodata:

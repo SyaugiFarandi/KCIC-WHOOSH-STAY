@@ -1,0 +1,274 @@
+{
+  "locationCode": "HALIM",
+  "locationName": "Stasiun Whoosh Halim",
+  "researchedAt": "2026-11-22",
+  "stationContext": "Stasiun Whoosh Halim is the Jakarta terminus of the KCIC Jakarta-Bandung high-speed railway, located in the Halim Perdanakusuma area (Kec. Makasar, Jakarta Timur), near the Cawang/Jatinegara hotel cluster along Jl. MT Haryono and Jl. DI Panjaitan. No official KCIC source publicly names any crew accommodation facility at Halim; KCIC instead published an open tender (Feb 2026) for external accommodation and transport management services for expatriate annual leave and employee business travel through December 2026.",
+  "properties": [
+    {
+      "name": "Best Western Premier The Hive",
+      "address": "Jl. DI. Panjaitan Kav. 3-4, RT.7/RW.11, Cipinang Cempedak, Jatinegara, Jakarta Timur, DKI Jakarta 13340, Indonesia",
+      "latitude": null,
+      "longitude": null,
+      "distanceKm": 1.77,
+      "propertyType": "HOTEL",
+      "classification": "VERIFIED_PUBLIC",
+      "facilities": [
+        "Outdoor swimming pool (free)",
+        "Children's pool",
+        "Spa (additional charge)",
+        "Massage room",
+        "Gym",
+        "Restaurant",
+        "Conference room (additional charge)",
+        "Business center (24-hour per property description)",
+        "Free public parking",
+        "Free luggage storage",
+        "Free Wi-Fi in public areas",
+        "Wake-up call",
+        "Breakfast (Western, Halal options)",
+        "Executive lounge (premium guests)"
+      ],
+      "website": null,
+      "contactName": null,
+      "contactPhone": "+62-21-29821888",
+      "notes": "4-star hotel; Trip.com listing (fetched) states opened 2014, 191 rooms, email reservation@bwpremierthehive.com. distanceKm 1.77 is the listing's stated 'Distance to Train Station: 1.77KM' to 'Halim railway station'; Traveloka search snippets suggested ~1.0 km to Stasiun Kereta Cepat Halim, so the exact distance/measurement basis is inconsistent across sources - treat 1.77 as the Trip.com-stated figure only. Listing also states 4.11 km to Halim Perdanakusuma Airport (airport, not station). No airport transfer service; pets not allowed. Official bestwestern.com page returned HTTP 403 and could not be fetched. No evidence of any KCIC crew-accommodation contract.",
+      "sources": [
+        {
+          "url": "https://us.trip.com/hotels/east-jakarta-city-hotel-detail-2511937/best-western-premier-the-hive/",
+          "title": "Best Western Premier the Hive (East Jakarta) - Trip.com",
+          "sourceType": "OTHER",
+          "checkedAt": "2026-11-22",
+          "photoUrl": null,
+          "photoRights": null,
+          "photoTakenAt": null,
+          "notes": "Fetched full page: schema.org PostalAddress confirms full address; Services & Amenities section lists amenities recorded above; About This Property section states nearest train station 'Halim railway station' at 1.77KM; Property Description states 191 rooms, opened 2014, phone and reservation email."
+        }
+      ]
+    },
+    {
+      "name": "Swiss-Belinn Cawang",
+      "address": "Jl. Letjen M.T. Haryono No.9, Cawang, Kramat Jati, Jakarta Timur, DKI Jakarta 13630, Indonesia",
+      "latitude": -6.2469728611647755,
+      "longitude": 106.87021267353323,
+      "distanceKm": null,
+      "propertyType": "HOTEL",
+      "classification": "VERIFIED_PUBLIC",
+      "facilities": [
+        "Swimming pool (outdoor)",
+        "Room service",
+        "24-hour front desk",
+        "Non-smoking rooms",
+        "Air conditioning",
+        "Spa/Wellness Centre",
+        "Massage & Wellness",
+        "Airport shuttle",
+        "Transportation On-Call",
+        "Free WiFi",
+        "All-day dining restaurant",
+        "Meeting rooms (10) and grand ballroom"
+      ],
+      "website": "https://www.swiss-belhotel.com/hotels/swiss-belinn-cawang",
+      "contactName": null,
+      "contactPhone": "+622129257777",
+      "notes": "Official brand page states 240 rooms, 500 m to LRT Station Cawang, and 4.5 km to Halim Perdanakusuma Airport. The 4.5 km figure is to the AIRPORT, not to Stasiun Whoosh Halim, so distanceKm left null. Coordinates taken verbatim from the Google Maps embed on the official property page (map marker params), not estimated. Reservation email resvsica@swiss-belhotel.com. No evidence of any KCIC crew-accommodation contract.",
+      "sources": [
+        {
+          "url": "https://www.swiss-belhotel.com/hotels/swiss-belinn-cawang",
+          "title": "Modern Hotel in Cawang Jakarta | Swiss-Belinn Cawang - Official Site",
+          "sourceType": "OFFICIAL_PROPERTY",
+          "checkedAt": "2026-11-22",
+          "photoUrl": null,
+          "photoRights": null,
+          "photoTakenAt": null,
+          "notes": "Fetched; address, phone, email, amenities and landmark distances decoded from the page's embedded hotel data (base64JsonRowData). Google Maps embed on the same page provides the recorded coordinates."
+        }
+      ]
+    },
+    {
+      "name": "PARK HOTEL Cawang - Jakarta",
+      "address": "Jl. D.I. Pandjaitan Kav. 5, Jakarta Timur, DKI Jakarta 13340, Indonesia",
+      "latitude": null,
+      "longitude": null,
+      "distanceKm": null,
+      "propertyType": "HOTEL",
+      "classification": "VERIFIED_PUBLIC",
+      "facilities": [
+        "Meeting rooms",
+        "24-hour room service",
+        "Terrace Cafe (daily live music)",
+        "Large outdoor swimming pool",
+        "Free 24-hour Wi-Fi"
+      ],
+      "website": "http://www.parkhotel.co.id",
+      "contactName": null,
+      "contactPhone": "021-29982000",
+      "notes": "3-star business hotel verified via owner PT PP Properti's official corporate page. The page inconsistently states both '162 bedrooms and 12 meeting rooms' and '156 calming & intimate guest rooms', so no room count is asserted. Page states 'only 10 minutes from Halim Perdanakusuma Airport' (travel time to airport, not distance to Whoosh station), hence distanceKm null. Website URL as listed on the owner's page (not independently fetched). No evidence of any KCIC crew-accommodation contract.",
+      "sources": [
+        {
+          "url": "https://pp-properti.com/en/product/hospitality/park-hotel-jakarta",
+          "title": "Park Hotel Jakarta - PT PP Properti (owner) product page",
+          "sourceType": "OFFICIAL_PROPERTY",
+          "checkedAt": "2026-11-22",
+          "photoUrl": null,
+          "photoRights": null,
+          "photoTakenAt": null,
+          "notes": "Fetched; confirms address, phone, star class, amenities, website URL, and airport proximity claim."
+        }
+      ]
+    },
+    {
+      "name": "Harper MT Haryono, Cawang by ASTON",
+      "address": "Jl. MT. Haryono Kav. 6-7 (Jl. Biru Laut X), Cawang, Jakarta Timur, DKI Jakarta 13340, Indonesia",
+      "latitude": null,
+      "longitude": null,
+      "distanceKm": null,
+      "propertyType": "HOTEL",
+      "classification": "VERIFIED_PUBLIC",
+      "facilities": [
+        "Restaurant",
+        "Wheelchair access",
+        "Prayer room",
+        "24-hour front desk",
+        "24-hour security",
+        "24-hour room service"
+      ],
+      "website": "https://www.harperhotels.com/en/hotel/view/4/harper-m-t--haryono---jakarta",
+      "contactName": null,
+      "contactPhone": "+62 21 3972 1007",
+      "notes": "Official Archipelago/ASTON brand page fetched. Email cawanginfo@harperhotels.com; WhatsApp +62 811 8627 888. Page states 'just 15 minutes away from Halim Perdana Kusuma Airport' (time to airport, not station distance), so distanceKm null. Pets not allowed. No evidence of any KCIC crew-accommodation contract.",
+      "sources": [
+        {
+          "url": "https://www.harperhotels.com/en/hotel/view/4/harper-m-t--haryono---jakarta",
+          "title": "Harper MT Haryono, Jakarta - Official Harper Hotels (Archipelago) site",
+          "sourceType": "OFFICIAL_PROPERTY",
+          "checkedAt": "2026-11-22",
+          "photoUrl": null,
+          "photoRights": null,
+          "photoTakenAt": null,
+          "notes": "Fetched; confirms full address, contacts, facilities/services list, and airport proximity wording."
+        }
+      ]
+    },
+    {
+      "name": "favehotel PGC Cililitan",
+      "address": "Jalan Mayjen Sutoyo No. 76, Cililitan, Jakarta Timur, DKI Jakarta 13640, Indonesia",
+      "latitude": null,
+      "longitude": null,
+      "distanceKm": null,
+      "propertyType": "HOTEL",
+      "classification": "VERIFIED_PUBLIC",
+      "facilities": [
+        "Restaurant",
+        "Cafe",
+        "Ballroom with videotron",
+        "24-hour front desk",
+        "24-hour security",
+        "Airport transfers"
+      ],
+      "website": "https://www.favehotels.com/en/hotel/view/19/favehotel-pgc-cililitan",
+      "contactName": null,
+      "contactPhone": "+622180884545",
+      "notes": "Official favehotel (Archipelago) page fetched. Description says 'Conveniently located beside the main bus station Cawang, PGC shopping mall, Whoosh Station Jakarta, Polri Hospital' - the operator itself claims proximity to the Whoosh station, but gives no distance to it. Stated '4.9km from Halim Perdanakusuma International Airport' is to the AIRPORT, so distanceKm null. Email cililitaninfo@favehotels.com; WhatsApp +628111136545. Pets not allowed. No evidence of any KCIC crew-accommodation contract.",
+      "sources": [
+        {
+          "url": "https://www.favehotels.com/en/hotel/view/19/favehotel-pgc-cililitan",
+          "title": "favehotel PGC Cililitan - Official favehotels (Archipelago) site",
+          "sourceType": "OFFICIAL_PROPERTY",
+          "checkedAt": "2026-11-22",
+          "photoUrl": null,
+          "photoRights": null,
+          "photoTakenAt": null,
+          "notes": "Fetched; confirms address, contacts, facilities/services, 'Whoosh Station Jakarta' proximity claim, and 4.9 km airport distance."
+        }
+      ]
+    },
+    {
+      "name": "Vasaka Hotel Jakarta Managed by Dafam",
+      "address": "Jl. MT Haryono Kav. 10A, RT.11/RW.11, Cipinang Cempedak, Jatinegara, Jakarta Timur, DKI Jakarta 13340, Indonesia",
+      "latitude": null,
+      "longitude": null,
+      "distanceKm": null,
+      "propertyType": "HOTEL",
+      "classification": "VERIFIED_PUBLIC",
+      "facilities": [
+        "Pool",
+        "Spa",
+        "Massage room",
+        "Free public parking",
+        "Luggage storage",
+        "Bar",
+        "Table tennis room",
+        "Restaurant",
+        "Free Wi-Fi (rooms)",
+        "Air conditioning (rooms)"
+      ],
+      "website": null,
+      "contactName": null,
+      "contactPhone": null,
+      "notes": "Formerly Hotel Dafam Teraskita Jakarta (renamed Vasaka in 2023 per encyclopedic snippet). Verified via Trip.com listing (fetched, schema.org PostalAddress); official dafamhotels.com page (https://www.dafamhotels.com/hotel-directory/vasaka-hotel-jakarta) could not be fetched at check time, so website left null. Trip.com AI-generated review summary claims 'about 300m from LRT Cawang Station and 2km from Halim Speed Train Station' - AI-generated, not an authoritative stated distance, so distanceKm left null. Booking.com page blocked by WAF. No evidence of any KCIC crew-accommodation contract.",
+      "sources": [
+        {
+          "url": "https://us.trip.com/hotels/east-jakarta-city-hotel-detail-5494386/teraskita-hotel-jakarta-managed-by-dafam/",
+          "title": "Vasaka Hotel Jakarta Managed by Dafam - Trip.com listing",
+          "sourceType": "OTHER",
+          "checkedAt": "2026-11-22",
+          "photoUrl": null,
+          "photoRights": null,
+          "photoTakenAt": null,
+          "notes": "Fetched; schema.org PostalAddress confirms full address; amenities section lists facilities recorded above. AI review-summary distance claims noted but not adopted."
+        }
+      ]
+    },
+    {
+      "name": "H Residence Apartment - Spacious Studio unit (listed on Trip.com)",
+      "address": "Jl. MT Haryono No.7, RT.12/RW.11, Cipinang Cempedak, Jatinegara, Jakarta Timur, DKI Jakarta 13340, Indonesia",
+      "latitude": null,
+      "longitude": null,
+      "distanceKm": 2.25,
+      "propertyType": "APARTMENT",
+      "classification": "VERIFIED_PUBLIC",
+      "facilities": [
+        "Parking (additional charge)",
+        "Elevator",
+        "Designated smoking area",
+        "Air conditioning",
+        "Private bathroom",
+        "Kitchen with refrigerator and stovetop",
+        "Rice cooker",
+        "Desk",
+        "TV"
+      ],
+      "website": null,
+      "contactName": null,
+      "contactPhone": "+62-85179939341",
+      "notes": "Individual studio rental unit (listing states 'Number of Rooms: 1') inside the H Residence apartment building, not the whole building; building total units/floors unknown and not asserted. distanceKm 2.25 converted from the listing's stated 'Train station: Halim (1.4 miles)'; the listing does not specify whether this is the Whoosh KCIC station POI, so treat as indicative only. Other snippets give the building address as Jl. MT Haryono Kav. 6-7 (same complex as Harper hotel). Check-in 14:00-24:00, deposit IDR 300,000, pets not allowed, housekeeping once per stay. Phone is the listing's contact number, not a building management office. No evidence of any KCIC crew-accommodation contract.",
+      "sources": [
+        {
+          "url": "https://us.trip.com/hotels/east-jakarta-city-hotel-detail-47812689/spacious-studio-apartment-the-h-residence-near-mt-haryono/",
+          "title": "Spacious Studio Apartment @ the H Residence Near MT Haryono - Trip.com listing",
+          "sourceType": "OTHER",
+          "checkedAt": "2026-11-22",
+          "photoUrl": null,
+          "photoRights": null,
+          "photoTakenAt": null,
+          "notes": "Fetched; schema.org PostalAddress confirms address; amenities, room features, policies, phone, and 'Train station: Halim (1.4 miles)' surroundings line verified on page."
+        }
+      ]
+    }
+  ],
+  "missingInfo": [
+    "No official KCIC source (kcic.co.id, official press release, or official Whoosh site) names any crew accommodation/mess facility at Halim; therefore zero properties are classified VERIFIED_OFFICIAL_KCIC.",
+    "Verified straight-line or road distances to Stasiun Whoosh Halim are unavailable for most properties; published figures are mostly to Halim Perdanakusuma AIRPORT. The Hive (1.77 km) and H Residence (1.4 miles) distances come from OTA listings referencing 'Halim' station and could not be cross-confirmed (Traveloka snippet for The Hive suggests ~1 km).",
+    "Coordinates unavailable for all properties except Swiss-Belinn Cawang (official page map embed).",
+    "No crew/corporate rates, room allocations, occupancy, or contract terms are publicly disclosed for any property.",
+    "No guesthouse or homestay near Stasiun Whoosh Halim could be verified with a concrete address from a fetched source; candidates exist on OTAs but Traveloka/tiket.com pages are bot-blocked.",
+    "Park Hotel Cawang room count is inconsistent on the owner's page (162 vs 156); official parkhotel.co.id site not independently fetched.",
+    "Vasaka official website (dafamhotels.com) unreachable at check time; verification relies on Trip.com listing."
+  ],
+  "kcicDataRequests": [
+    "Ask KCIC (procurement@kcic.co.id) which hotels/properties were contracted under the 2026 open tender 'Pengadaan Jasa Manajemen Akomodasi dan Transportasi Cuti Tahunan Ekspatriat serta Perjalanan Dinas Karyawan Tahun 2026' (announced 2026-02-13, value Rp 6,964,455,000 excl. PPN, service period until December 2026). Source: https://kcic.co.id/lelang/pengumuman-ulang-tender-terbuka-pengadaan-jasa-manajemen-akomodasi-dan-transportasi-cuti-tahunan-ekspatriat-serta-perjalanan-dinas-karyawan-tahun-2026/ (KCIC_OFFICIAL, fetched, checkedAt 2026-11-22).",
+    "Ask whether KCIC operates or leases any dedicated crew mess/lodging at or near Stasiun Whoosh Halim (KCIC Halim office: Jl. Akses Kereta Cepat Halim Perdanakusumah, Kel. Halim Perdana Kusuma, Kec. Makasar, Jakarta Timur 13610, per kcic.co.id contact page).",
+    "Request crew accommodation rate cards, room allocations/capacity, and booking/occupancy arrangements for train crews and staff on business travel at Halim.",
+    "Request official confirmation of which nearby public hotels (e.g., Best Western Premier The Hive, Swiss-Belinn Cawang, Park Hotel Cawang, Harper MT Haryono, favehotel PGC Cililitan, Vasaka) hold corporate/crew contracts with KCIC, if any."
+  ]
+}
